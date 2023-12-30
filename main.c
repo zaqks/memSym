@@ -20,7 +20,7 @@ int main(int argc, char *args[])
         pushProcessQueue(iQueue, process);
     }
 
-    iQueueW = initWIQueue(iQueue);
+    iQueueW = initWIQueue(renderer, iQueue);
 
     eventLoop(window, eventFunc, loopFunc);
 

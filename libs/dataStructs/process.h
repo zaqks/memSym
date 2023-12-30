@@ -1,3 +1,5 @@
+int lastProcessId = 0;
+
 typedef struct
 {
     int id;
@@ -8,7 +10,6 @@ typedef struct
 
 int randomNum(int min, int max)
 {
-    
     return (rand() % (max - min)) + min;
 }
 
@@ -21,6 +22,8 @@ Process *initProcess()
     time(&currentTime);
     process->arvTime = (char *)ctime(&currentTime);
     // get the id
+    process->id = lastProcessId;
+    lastProcessId += 1;
 
     // set the clocks + exeTime
     process->clocks = randomNum(10, 100);
