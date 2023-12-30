@@ -6,3 +6,9 @@ Queue *iQueue; // instruction queue
 
 WidgetIQueue *iQueueW;
 WidgetLegend *legendW;
+
+
+bool runProcessor = true;
+bool runQueue = false;
+
+

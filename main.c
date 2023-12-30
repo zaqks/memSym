@@ -1,8 +1,8 @@
 #include "libs/project/imports.h"
-#include "libs/dataStructs/process.h"
 
 int main(int argc, char *args[])
 {
+    srand(time(NULL)); // set the seed
 
     window = initWin("memSym");
     pixelFormat = SDL_GetWindowSurface(window->win)->format;
@@ -11,6 +11,15 @@ int main(int argc, char *args[])
     legendW = initLengendW(renderer);
 
     iQueue = initQueue();
+
+    // add processes
+    Process *process;
+    for (int i = 0; i < 10; i++)
+    {
+        process = initProcess();
+        pushProcessQueue(iQueue, process);
+    }
+
     iQueueW = initWIQueue(iQueue);
 
     eventLoop(window, eventFunc, loopFunc);

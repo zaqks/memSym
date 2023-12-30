@@ -1,5 +1,5 @@
 #define LegendsNum 6
-char *legends[LegendsNum] = {"<q> toggle clock", "<w> toggle queue", "<e> best fit", "<r> first fit", "<t> worst fit", "<y> toggle priority"};
+char *legends[LegendsNum] = {"<q> toggle processor", "<w> toggle queue", "<e> best fit", "<r> first fit", "<t> worst fit", "<y> toggle priority"};
 
 const int legendPadding = 10;
 TTF_Font *legendFont;

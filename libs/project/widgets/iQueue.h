@@ -27,7 +27,7 @@ WidgetIQueue *initWIQueue(Queue *queue)
     int pWidth = mainRect->w;
     int pHeight = mainRect->h / iQueueLength;
 
-    ProcessW *process;
+    ProcessW *processW;
     Process *current;
     for (int i = 0; i < iQueueLength; i++)
     {
@@ -46,8 +46,8 @@ WidgetIQueue *initWIQueue(Queue *queue)
         {
             current = (Process *)popQueueNode(queue);
 
-            process = initProcessW(current, processRect->w, processRect->h, processRect->x, processRect->y);
-            iQueue->processesW[i] = process;
+            processW = initProcessW(current, processRect->w, processRect->h, processRect->x, processRect->y);
+            iQueue->processesW[i] = processW;
         }
     }
 
@@ -57,22 +57,22 @@ WidgetIQueue *initWIQueue(Queue *queue)
 // draw
 void drawWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget)
 {
-    // set drawing color
-    SDL_SetRenderDrawColor(renderer, WHITECLR.r, WHITECLR.g, WHITECLR.b, WHITECLR.a);
-
+    
     // draw main
+    SDL_SetRenderDrawColor(renderer, WHITECLR.r, WHITECLR.g, WHITECLR.b, WHITECLR.a);
     SDL_RenderDrawRect(renderer, widget->mainRect);
-
-    // draw processesRects
-    for (int i = 0; i < iQueueLength; i++)
-    {
-        SDL_RenderDrawRect(renderer, widget->processesRects[i]);
-    }
 
     // draw processesRects
     for (int i = 0; i < widget->processesNum; i++)
     {
         drawProcessW(renderer, widget->processesW[i]);
+    }
+
+    // draw processesRects
+    SDL_SetRenderDrawColor(renderer, WHITECLR.r, WHITECLR.g, WHITECLR.b, WHITECLR.a);
+    for (int i = 0; i < iQueueLength; i++)
+    {
+        SDL_RenderDrawRect(renderer, widget->processesRects[i]);
     }
 }
 

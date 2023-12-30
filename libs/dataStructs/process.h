@@ -8,7 +8,7 @@ typedef struct
 
 int randomNum(int min, int max)
 {
-    srand(time(NULL)); // set the seed
+    
     return (rand() % (max - min)) + min;
 }
 
