@@ -12,7 +12,7 @@ int randomNum(int min, int max)
     return (rand() % (max - min)) + min;
 }
 
-Process *createProcess()
+Process *initProcess()
 {
     Process *process = (Process *)malloc(sizeof(Process));
 
@@ -29,6 +29,6 @@ Process *createProcess()
     return process;
 }
 
-void initProcess(Queue *queue, Process *process) {
+void pushProcessQueue(Queue *queue, Process *process) {
     pushQueueNode(queue, process);
 }
