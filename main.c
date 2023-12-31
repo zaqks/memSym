@@ -7,21 +7,16 @@ int main(int argc, char *args[])
     window = initWin("memSym");
     pixelFormat = SDL_GetWindowSurface(window->win)->format;
     renderer = window->renderer;
+    MAINPADDING *= window->padding;
 
-    legendW = initLengendW(renderer);
-
+    
     iQueue = initQueue();
-
-    // add processes
-    Process *process;
-    for (int i = 0; i < 10; i++)
-    {
-        process = initProcess();
-        pushProcessQueue(iQueue, process);
-    }
-
+    ramPartitions = initRam();
+    
+    legendW = initLengendW(renderer);
     iQueueW = initWIQueue(renderer, iQueue);
-
+    ramW = initRamW();
+    
     eventLoop(window, eventFunc, loopFunc);
 
     return 0;

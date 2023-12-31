@@ -1,5 +1,6 @@
-// #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <stdlib.h>
+#include <strings.h>
 
 typedef struct
 {
@@ -65,4 +66,9 @@ void updateText(SDL_Renderer *renderer, Text *widget, char *text)
 
     widget->rect->w = surface->w;
     widget->rect->h = surface->h;
+}
+
+void eraseText(Text *txt) {
+    //SDL_DestroyTexture(txt->texture);
+    //free(txt);
 }

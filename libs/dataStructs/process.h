@@ -6,6 +6,7 @@ typedef struct
     char *arvTime;
     int clocks;
     int exeTime;
+    int size;
 } Process;
 
 int randomNum(int min, int max)
@@ -29,9 +30,14 @@ Process *initProcess()
     process->clocks = randomNum(10, 100);
     process->exeTime = (process->clocks) / 1000; // in seconds
 
+    // set the size
+    process->size = randomNum(1, 6) * sizeof(Process);
+
     return process;
 }
 
-void pushProcessQueue(Queue *queue, Process *process) {
+void pushProcessQueue(Queue *queue, Process *process)
+{
     pushQueueNode(queue, process);
+    printf("new process added\n");
 }

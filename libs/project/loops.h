@@ -26,21 +26,34 @@ void eventFunc(SDL_Event e)
     }
 }
 
-int counter = 0;
+int counter = CLK / REFRESHRATE;
 void loopFunc(Window *window)
 {
     if (runProcessor)
     {
         if (counter >= CLK / REFRESHRATE)
         {
+            // add processes
+            if (runQueue)
+            {
+                if (iQueue->length < iQueueLength)
+                {
+                    pushProcessQueue(iQueue, initProcess());
+                }
+            }
+
+            // refresh
             SDL_SetRenderDrawColor(window->renderer, BGCLR.r, BGCLR.g, BGCLR.b, BGCLR.a);
             SDL_RenderClear(window->renderer);
             //
-            drawLegendW(renderer, legendW);
 
             updateWIQueue(renderer, iQueueW, iQueue);
             drawWIQueue(renderer, iQueueW);
 
+            updateRawW(renderer, ramW);
+            drawRawW(renderer, ramW);
+
+            drawLegendW(renderer, legendW);
             //
             SDL_RenderPresent(window->renderer);
             counter = 0;

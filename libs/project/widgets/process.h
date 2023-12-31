@@ -3,14 +3,15 @@ typedef struct
     SDL_Color color;
     SDL_Rect *mainRect;
     Text *idTxt;
-} ProcessW;
+    Text *szTxt;
+} WidgetProcess;
 
-#define idPadding 5
+#define txtPadding 5
 TTF_Font *processFont;
 
-ProcessW *initProcessW(SDL_Renderer *renderer, Process *process, int width, int height, int x, int y)
+WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width, int height, int x, int y)
 {
-    ProcessW *widget = (ProcessW *)malloc(sizeof(ProcessW));
+    WidgetProcess *widget = (WidgetProcess *)malloc(sizeof(WidgetProcess));
     // font
     if (processFont == NULL)
     {
@@ -36,13 +37,21 @@ ProcessW *initProcessW(SDL_Renderer *renderer, Process *process, int width, int 
 
     char *idVal = (char *)malloc(10);
     sprintf(idVal, "%d", process->id);
-    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, x + idPadding, y + idPadding);
+    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, x + txtPadding, y + txtPadding);
     widget->idTxt = idText;
+
+    char *sizeVal = (char *)malloc(10);
+    sprintf(sizeVal, "%dB", process->size);
+    Text *sizeText = createText(renderer, processFont, NULL, 0, sizeVal, widget->color, x, y);
+    sizeText->rect->x += mainRect->w - sizeText->rect->w - txtPadding;
+    sizeText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
+
+    widget->szTxt = sizeText;
 
     return widget;
 }
 
-void drawProcessW(SDL_Renderer *renderer, ProcessW *process)
+void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
 {
     // draw body
     SDL_SetRenderDrawColor(renderer, process->color.r,
@@ -53,4 +62,12 @@ void drawProcessW(SDL_Renderer *renderer, ProcessW *process)
 
     // draw text
     drawText(renderer, process->idTxt);
+    drawText(renderer, process->szTxt);
+}
+
+void eraseProcessW(WidgetProcess *process)
+{
+    eraseText(process->idTxt);
+    eraseText(process->szTxt);
+    free(process);
 }

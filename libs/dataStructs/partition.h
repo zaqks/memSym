@@ -1,6 +1,17 @@
 typedef struct partition
 {
-    struct partition *startAdr;
     int size;
     bool occupied;
+    Process *startAdr;
 } Partition;
+
+Partition *initPartition(int size)
+{
+    Partition *partition = (Partition *)malloc(sizeof(partition));
+    partition->size = size;
+
+
+
+
+    return partition;
+}

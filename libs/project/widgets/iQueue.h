@@ -4,7 +4,7 @@ typedef struct
     SDL_Rect *processesRects[iQueueLength];
 
     int processesNum;
-    ProcessW *processesW[iQueueLength];
+    WidgetProcess *processesW[iQueueLength];
 
 } WidgetIQueue;
 
@@ -17,7 +17,7 @@ WidgetIQueue *initWIQueue(SDL_Renderer *renderer, Queue *queue)
     // create the body rect
     SDL_Rect *mainRect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
     mainRect->h = SCREEN_HEIGHT - MAINPADDING * 2;
-    mainRect->w = MAINPADDING * 2;
+    mainRect->w = SCREEN_WIDTH / 10;
     mainRect->x = MAINPADDING;
     mainRect->y = MAINPADDING;
     iQueue->mainRect = mainRect;
@@ -27,7 +27,7 @@ WidgetIQueue *initWIQueue(SDL_Renderer *renderer, Queue *queue)
     int pWidth = mainRect->w;
     int pHeight = mainRect->h / iQueueLength;
 
-    ProcessW *processW;
+    WidgetProcess *processW;
     Process *current;
     for (int i = 0; i < iQueueLength; i++)
     {
@@ -45,6 +45,7 @@ WidgetIQueue *initWIQueue(SDL_Renderer *renderer, Queue *queue)
         if (i < iQueue->processesNum)
         {
             current = (Process *)popQueueNode(queue);
+            pushQueueNode(queue, current);
 
             processW = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
             iQueue->processesW[i] = processW;
@@ -78,6 +79,30 @@ void drawWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget)
 // update
 void updateWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget, Queue *queue)
 {
+    // delete processes
+    for (int i = 0; widget->processesNum; i++)
+    {
+        eraseProcessW(widget->processesW[i]);
+    }
 
-    printf("updated\n");
+    printf("passed\n");
+
+    // create new ones
+    widget->processesNum = queue->length;
+
+    SDL_Rect*processRect;//frame
+    Process *current;
+
+    for (int i = 0; i < widget->processesNum; i++)
+    {
+        processRect = widget->processesRects[i];
+
+        current = (Process *)popQueueNode(queue);
+        pushQueueNode(queue, current);
+
+
+        widget->processesW[i] = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
+    }
+
+    printf("iQueue updated\n");
 }

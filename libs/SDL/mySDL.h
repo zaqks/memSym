@@ -3,10 +3,10 @@
 #include <stdbool.h>
 
 #define REFRESHRATE 33
-#define FULLSCREEN true
+#define FULLSCREEN false
 
-int SCREEN_WIDTH = 800;
-int SCREEN_HEIGHT = 600;
+int SCREEN_WIDTH = 1024;
+int SCREEN_HEIGHT = 768;
 
 typedef struct
 {
@@ -14,6 +14,8 @@ typedef struct
     int height;
     SDL_Window *win;
     SDL_Renderer *renderer;
+    //
+    int padding;
 } Window;
 
 Window *initWin(char *title)
@@ -33,6 +35,7 @@ Window *initWin(char *title)
 
     newWin->width = SCREEN_WIDTH;
     newWin->height = SCREEN_HEIGHT;
+    newWin->padding = SCREEN_WIDTH / SCREEN_HEIGHT;
 
     char *newTitle = "window";
     if (title != NULL)

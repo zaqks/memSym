@@ -7,10 +7,10 @@
 
 void mergeStr(char *word, const char *add)
 {
-    if (strlen(word) < MAX_STR_LEN)
+    if (strlen(word) - strlen(word) < MAX_STR_LEN)
     {
         word[strlen(word)] = *add;
-        }
+    }
 };
 
 void deleteLastChar(char *word)
