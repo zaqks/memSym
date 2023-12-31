@@ -2,22 +2,35 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
 #define REFRESHRATE 33
+#define FULLSCREEN true
+
+int SCREEN_WIDTH = 800;
+int SCREEN_HEIGHT = 600;
 
 typedef struct
 {
     int width;
     int height;
     SDL_Window *win;
-    // SDL_Surface *surface;
     SDL_Renderer *renderer;
 } Window;
 
 Window *initWin(char *title)
 {
+    SDL_Init(SDL_INIT_EVERYTHING);
+    SDL_Init(SDL_INIT_VIDEO);
+
+    if (FULLSCREEN)
+    {
+        SDL_DisplayMode dm;
+        SDL_GetDesktopDisplayMode(0, &dm);
+        SCREEN_WIDTH = dm.w;
+        SCREEN_HEIGHT = dm.h;
+    }
+
     Window *newWin = (Window *)malloc(sizeof(Window));
+
     newWin->width = SCREEN_WIDTH;
     newWin->height = SCREEN_HEIGHT;
 
@@ -26,19 +39,21 @@ Window *initWin(char *title)
     {
         newTitle = title;
     }
-    SDL_Init(SDL_INIT_EVERYTHING);
-    newWin->win = SDL_CreateWindow(newTitle, 50, 50, newWin->width, newWin->height, SDL_WINDOW_SHOWN);
 
-    TTF_Init();
-    /*
-    newWin->surface = SDL_GetWindowSurface(newWin->win);
-    SDL_FillRect(newWin->surface, NULL, SDL_MapRGB(newWin->surface->format, 0xFF, 0x00, 0x00));
+    newWin->win = SDL_CreateWindow(newTitle, 10, 10, newWin->width, newWin->height, SDL_WINDOW_SHOWN);
 
-    SDL_UpdateWindowSurface(newWin->win);
-    */
+    if (FULLSCREEN)
+    {
+        SDL_SetWindowFullscreen(newWin->win, FULLSCREEN);
+        SDL_ShowCursor(0);
+    }
+
     newWin->renderer = SDL_CreateRenderer(newWin->win, -1, 0);
     SDL_SetRenderDrawColor(newWin->renderer, 0, 0, 0, 255);
     SDL_RenderClear(newWin->renderer);
+
+    TTF_Init();
+
     return newWin;
 }
 

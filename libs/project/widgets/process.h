@@ -5,6 +5,7 @@ typedef struct
     Text *idTxt;
 } ProcessW;
 
+#define idPadding 5
 TTF_Font *processFont;
 
 ProcessW *initProcessW(SDL_Renderer *renderer, Process *process, int width, int height, int x, int y)
@@ -32,26 +33,24 @@ ProcessW *initProcessW(SDL_Renderer *renderer, Process *process, int width, int 
     widget->mainRect = mainRect;
 
     // text
-    
-    char* idVal = (char*) malloc(10);
+
+    char *idVal = (char *)malloc(10);
     sprintf(idVal, "%d", process->id);
-    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, x, y);
+    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, x + idPadding, y + idPadding);
     widget->idTxt = idText;
-    
 
     return widget;
 }
 
 void drawProcessW(SDL_Renderer *renderer, ProcessW *process)
 {
-    //draw body
+    // draw body
     SDL_SetRenderDrawColor(renderer, process->color.r,
                            process->color.g,
                            process->color.b,
                            process->color.a);
     SDL_RenderDrawRect(renderer, process->mainRect);
 
-    //draw text
+    // draw text
     drawText(renderer, process->idTxt);
-
 }
