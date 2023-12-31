@@ -2,8 +2,10 @@ typedef struct
 {
     SDL_Color color;
     SDL_Rect *mainRect;
-    Text *idTxt;
     Text *szTxt;
+
+    int id;
+    Text *idTxt;
 } WidgetProcess;
 
 #define txtPadding 5
@@ -12,6 +14,7 @@ TTF_Font *processFont;
 WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width, int height, int x, int y)
 {
     WidgetProcess *widget = (WidgetProcess *)malloc(sizeof(WidgetProcess));
+    widget->id = process->id;
     // font
     if (processFont == NULL)
     {
@@ -67,7 +70,9 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
 
 void eraseProcessW(WidgetProcess *process)
 {
+    /*
     eraseText(process->idTxt);
     eraseText(process->szTxt);
     free(process);
+    */
 }

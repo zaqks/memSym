@@ -79,30 +79,35 @@ void drawWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget)
 // update
 void updateWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget, Queue *queue)
 {
-    // delete processes
-    for (int i = 0; widget->processesNum; i++)
-    {
-        eraseProcessW(widget->processesW[i]);
-    }
 
-    printf("passed\n");
 
-    // create new ones
-    widget->processesNum = queue->length;
 
-    SDL_Rect*processRect;//frame
+    SDL_Rect *processRect; // border
     Process *current;
-
-    for (int i = 0; i < widget->processesNum; i++)
+    for (int i = 0; i < queue->length; i++)
     {
-        processRect = widget->processesRects[i];
-
+        processRect = widget->processesRects[i]; // border
         current = (Process *)popQueueNode(queue);
         pushQueueNode(queue, current);
 
-
-        widget->processesW[i] = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
+        if (i < widget->processesNum)
+        {
+            if (current->id != widget->processesW[i]->id)
+            {
+                // delete
+                eraseProcessW(widget->processesW[i]);
+                //replace
+                widget->processesW[i] = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
+            }
+            
+        }
+        else
+        {
+            // creation
+            widget->processesW[i] = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
+        }
     }
 
-    printf("iQueue updated\n");
+    widget->processesNum = queue->length;
+
 }

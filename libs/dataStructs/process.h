@@ -39,5 +39,4 @@ Process *initProcess()
 void pushProcessQueue(Queue *queue, Process *process)
 {
     pushQueueNode(queue, process);
-    printf("new process added\n");
 }
