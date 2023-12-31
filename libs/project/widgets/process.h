@@ -6,6 +6,7 @@ typedef struct
 
     int id;
     Text *idTxt;
+    Text *clkTxt;
 } WidgetProcess;
 
 #define txtPadding 5
@@ -36,20 +37,29 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
 
     widget->mainRect = mainRect;
 
-    // text
+    // id text
 
     char *idVal = (char *)malloc(10);
     sprintf(idVal, "%d", process->id);
     Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, x + txtPadding, y + txtPadding);
     widget->idTxt = idText;
 
+    // size text
+
     char *sizeVal = (char *)malloc(10);
     sprintf(sizeVal, "%dB", process->size);
     Text *sizeText = createText(renderer, processFont, NULL, 0, sizeVal, widget->color, x, y);
     sizeText->rect->x += mainRect->w - sizeText->rect->w - txtPadding;
     sizeText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
-
     widget->szTxt = sizeText;
+
+    // clock text
+    char *clkVal = (char *)malloc(10);
+    sprintf(clkVal, "%dC", process->clocks);
+    Text *clkText = createText(renderer, processFont, NULL, 0, clkVal, widget->color, x, y);
+    clkText->rect->x += txtPadding;
+    clkText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
+    widget->clkTxt = clkText;
 
     return widget;
 }
@@ -66,6 +76,7 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
     // draw text
     drawText(renderer, process->idTxt);
     drawText(renderer, process->szTxt);
+    drawText(renderer, process->clkTxt);
 }
 
 void eraseProcessW(WidgetProcess *process)
@@ -73,5 +84,6 @@ void eraseProcessW(WidgetProcess *process)
     free(process->mainRect);
     eraseText(process->idTxt);
     eraseText(process->szTxt);
+    eraseText(process->clkTxt);
     free(process);
 }

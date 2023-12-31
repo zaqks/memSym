@@ -9,9 +9,9 @@ Partition *initPartition(int size)
 {
     Partition *partition = (Partition *)malloc(sizeof(partition));
     partition->size = size;
+    partition->occupied = false;
 
-
-
+    
 
     return partition;
 }
