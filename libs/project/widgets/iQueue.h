@@ -34,7 +34,7 @@ WidgetIQueue *initWIQueue(SDL_Renderer *renderer, Queue *queue)
         processRect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
 
         processRect->x = MAINPADDING;
-        processRect->y = MAINPADDING + i * pHeight;
+        processRect->y = (mainRect->h - pHeight + 2 * MAINPADDING) - (MAINPADDING + i * pHeight);
         processRect->w = pWidth;
         processRect->h = pHeight;
 
@@ -80,34 +80,26 @@ void drawWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget)
 void updateWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget, Queue *queue)
 {
 
+    // erase
+    for (int i = 0; i < widget->processesNum; i++)
+    {
+        eraseProcessW(widget->processesW[i]);
+    }
 
-
+    // redraw
+    widget->processesNum = queue->length;
+    
+    /*
     SDL_Rect *processRect; // border
     Process *current;
-    for (int i = 0; i < queue->length; i++)
+    for (int i = 0; i < widget->processesNum; i++)
     {
         processRect = widget->processesRects[i]; // border
         current = (Process *)popQueueNode(queue);
         pushQueueNode(queue, current);
 
-        if (i < widget->processesNum)
-        {
-            if (current->id != widget->processesW[i]->id)
-            {
-                // delete
-                eraseProcessW(widget->processesW[i]);
-                //replace
-                widget->processesW[i] = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
-            }
-            
-        }
-        else
-        {
-            // creation
-            widget->processesW[i] = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
-        }
+        initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
     }
-
-    widget->processesNum = queue->length;
-
+*/
+    printf("%d\n", queue->length);
 }

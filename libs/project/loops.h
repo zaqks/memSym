@@ -36,6 +36,13 @@ void loopFunc(Window *window)
             // add processes
             if (runQueue)
             {
+                /*
+                if (iQueue->length == 10)
+                {
+                    popQueueNode(iQueue);
+                }
+                */
+
                 if (iQueue->length < iQueueLength)
                 {
                     pushProcessQueue(iQueue, initProcess());

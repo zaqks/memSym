@@ -22,10 +22,10 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     }
 
     // color
-    widget->color.r = randomNum(0, 255);
-    widget->color.g = randomNum(0, 255);
-    widget->color.b = randomNum(0, 255);
-    widget->color.a = 255;
+    widget->color.r = process->color.r;
+    widget->color.g = process->color.g;
+    widget->color.b = process->color.b;
+    widget->color.a = process->color.a;
 
     // main Rect
     SDL_Rect *mainRect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
@@ -75,4 +75,6 @@ void eraseProcessW(WidgetProcess *process)
     eraseText(process->szTxt);
     free(process);
     */
+
+    printf("erase process: %d\n", process->id);
 }
