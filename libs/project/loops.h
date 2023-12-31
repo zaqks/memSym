@@ -53,7 +53,7 @@ void loopFunc(Window *window)
             updateWIQueue(renderer, iQueueW, iQueue);
             drawWIQueue(renderer, iQueueW);
 
-            updateRawW(renderer, ramW);
+            updateRawW(renderer, ramW, ramPartitions);
             drawRawW(renderer, ramW);
 
             drawLegendW(renderer, legendW);

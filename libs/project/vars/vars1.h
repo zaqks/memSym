@@ -7,7 +7,6 @@ Queue *iQueue; // instruction queue
 Ram *ramPartitions; // ram
 
 WidgetIQueue *iQueueW;
-WidgetLegend *legendW;
 WidgetRam *ramW;
 
 bool runProcessor = true;

@@ -1,4 +1,4 @@
-#define ramSize  1024*1024; // 1024Kb
+const int ramSize = 1024 * 1024; // 1024Kb
 
 typedef struct
 {
@@ -12,9 +12,13 @@ Ram *initRam()
     ram->freeSpace = ramSize;
     ram->partitions = initList();
 
-    //create the partitions
-
-    Partition *partition = initPartition(10);
+    // create the partitions
+    Partition *partition;
+    for (int i = 0; i < 3; i++)
+    {
+        partition = initPartition(ramSize / 3);
+        addListNode1(ram->partitions, partition);
+    }
 
     return ram;
 }

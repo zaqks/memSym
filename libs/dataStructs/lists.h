@@ -20,7 +20,7 @@ List *initList()
     lst->head = NULL;
     lst->length = 0;
 }
-
+//queue mode
 void addListNode1(List *lst, void *val)
 {
     ListNode *newElem = (ListNode *)malloc(sizeof(ListNode));
@@ -38,7 +38,7 @@ void addListNode1(List *lst, void *val)
     lst->queue = newElem;
     lst->length += 1;
 }
-
+//stack mode 
 void addListNode2(List *lst, void *val)
 {
     ListNode *newElem = (ListNode *)malloc(sizeof(ListNode));

@@ -7,16 +7,18 @@
 #include "../dataStructs/queue.h"
 #include "../dataStructs/process.h"
 
-#include "vars/vars2.h"
+
 
 #include "../dataStructs/partition.h"
 #include "../dataStructs/ram.h"
 
 #include "../SDL/widgets/Text.h"
-#include "widgets/legend.h"
 
+#include "widgets/legend.h"
+#include "vars/vars2.h"
 #include "widgets/process.h"
 #include "widgets/iQueue.h"
+#include  "widgets/partition.h"
 #include "widgets/ram.h"
 
 

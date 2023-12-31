@@ -9,10 +9,10 @@ typedef struct
 } WidgetIQueue;
 
 // init
-WidgetIQueue *initWIQueue(SDL_Renderer *renderer, Queue *queue)
+WidgetIQueue *initWIQueue()
 {
     WidgetIQueue *iQueue = (WidgetIQueue *)malloc(sizeof(WidgetIQueue));
-    iQueue->processesNum = queue->length;
+    iQueue->processesNum = 0;
 
     // create the body rect
     SDL_Rect *mainRect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
@@ -41,15 +41,16 @@ WidgetIQueue *initWIQueue(SDL_Renderer *renderer, Queue *queue)
         iQueue->processesRects[i] = processRect;
 
         // create the processes
+        /*
+                if (i < iQueue->processesNum)
+                {
+                    current = (Process *)popQueueNode(queue);
+                    pushQueueNode(queue, current);
 
-        if (i < iQueue->processesNum)
-        {
-            current = (Process *)popQueueNode(queue);
-            pushQueueNode(queue, current);
-
-            processW = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
-            iQueue->processesW[i] = processW;
-        }
+                    processW = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
+                    iQueue->processesW[i] = processW;
+                }
+        */
     }
 
     return iQueue;
