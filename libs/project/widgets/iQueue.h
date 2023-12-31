@@ -87,19 +87,15 @@ void updateWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget, Queue *queue)
     }
 
     // redraw
-    widget->processesNum = queue->length;
-    
-    /*
     SDL_Rect *processRect; // border
     Process *current;
-    for (int i = 0; i < widget->processesNum; i++)
+    for (int i = 0; i < queue->length; i++)
     {
         processRect = widget->processesRects[i]; // border
         current = (Process *)popQueueNode(queue);
         pushQueueNode(queue, current);
-
-        initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
+        widget->processesW[i] =
+            initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
     }
-*/
-    printf("%d\n", queue->length);
+    widget->processesNum = queue->length;
 }

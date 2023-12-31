@@ -70,11 +70,8 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
 
 void eraseProcessW(WidgetProcess *process)
 {
-    /*
+    free(process->mainRect);
     eraseText(process->idTxt);
     eraseText(process->szTxt);
     free(process);
-    */
-
-    printf("erase process: %d\n", process->id);
 }

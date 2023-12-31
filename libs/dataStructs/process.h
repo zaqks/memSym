@@ -48,5 +48,9 @@ Process *initProcess()
 void pushProcessQueue(Queue *queue, Process *process)
 {
     pushQueueNode(queue, process);
-    printf("new process created\n");
+}
+
+void killProcess(Process*process){
+    free(process->arvTime);
+    free(process);
 }
