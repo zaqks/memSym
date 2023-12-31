@@ -46,16 +46,28 @@ void drawRawW(SDL_Renderer *renderer, WidgetRam *widget)
     SDL_RenderDrawRect(renderer, widget->grpRect);
 
     // partitions
+    ListNode *current = widget->partitionsW->head;
+    for (int i = 0; i < widget->partitionsW->length; i++)
+    {
+        drawPartitionW(renderer, current->val);
+        current = current->next;
+    }
+
+    // printf("draw ram\n");
 }
 
 void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
 {
     // delete partitionsW
-    int partitionsNum = widget->partitionsW->length;
-    for (int i = 0; i < partitionsNum; i++)
+    ListNode *currentW = widget->partitionsW->head;
+
+    while (widget->partitionsW->length)
     {
-        erasePartitionW()
+        erasePartitionW(currentW->val);
+        currentW = currentW->next;
+        removeListNode(widget->partitionsW, 0);
     }
 
     // create the partitions
+    // printf("update ram\n");
 }
