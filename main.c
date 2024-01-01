@@ -9,12 +9,13 @@ int main(int argc, char *args[])
     renderer = window->renderer;
     MAINPADDING *= window->padding;
 
-    
+    //structs inits
     iQueue = initQueue();
     ramPartitions = initRam();
     
+    //widgets inits
     legendW = initLengendW(renderer);
-    iQueueW = initWIQueue(renderer, iQueue);
+    iQueueW = initWIQueue();
     ramW = initRamW();
     
     eventLoop(window, eventFunc, loopFunc);

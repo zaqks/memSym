@@ -9,5 +9,12 @@ Ram *ramPartitions; // ram
 WidgetIQueue *iQueueW;
 WidgetRam *ramW;
 
-bool runProcessor = true;
+bool runProcessor = false;
 bool runQueue = false;
+
+/*
+first f
+best f
+worst f
+*/
+int loadingStrategy = 0;

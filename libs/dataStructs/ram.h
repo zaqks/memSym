@@ -22,3 +22,9 @@ Ram *initRam()
 
     return ram;
 }
+
+int loadProcess(Ram *ram, Process *process, int strategy)
+{
+    
+    return 1;
+}

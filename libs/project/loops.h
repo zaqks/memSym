@@ -12,11 +12,14 @@ void eventFunc(SDL_Event e)
         case 119: // w
             runQueue = !runQueue;
             break;
-        case 101: // e
+        case 101: // e first
+            loadingStrategy = 0;
             break;
-        case 114: // r
+        case 114: // r best 
+            loadingStrategy = 1;
             break;
-        case 116: // t
+        case 116: // t worst
+            loadingStrategy = 2;
             break;
         case 121: // y
             break;
@@ -25,43 +28,53 @@ void eventFunc(SDL_Event e)
         }
     }
 }
+Process *processLoad;
 
 int counter = CLK / REFRESHRATE;
 void loopFunc(Window *window)
 {
-    if (runProcessor)
+
+    if (counter >= CLK / REFRESHRATE)
     {
-        if (counter >= CLK / REFRESHRATE)
+        // add processes to iQueue
+        if (runQueue)
         {
-            // add processes
-            if (runQueue)
+
+            if (iQueue->length < iQueueLength)
             {
-                
-
-                if (iQueue->length < iQueueLength)
-                {
-                    pushProcessQueue(iQueue, initProcess());
-                }
-                
+                pushProcessQueue(iQueue, initProcess());
             }
-
-            // refresh
-            SDL_SetRenderDrawColor(window->renderer, BGCLR.r, BGCLR.g, BGCLR.b, BGCLR.a);
-            SDL_RenderClear(window->renderer);
-            //
-
-            updateWIQueue(renderer, iQueueW, iQueue);
-            drawWIQueue(renderer, iQueueW);
-
-            updateRawW(renderer, ramW, ramPartitions);
-            drawRawW(renderer, ramW);
-
-            drawLegendW(renderer, legendW);
-            //
-            SDL_RenderPresent(window->renderer);
-            counter = 0;
         }
 
-        counter++;
+        // process
+        if (runProcessor)
+        {
+            if (iQueue->length > 0)
+            {
+                processLoad = (Process *)popQueueNode(iQueue);
+                if (!loadProcess(ramPartitions, processLoad, loadingStrategy))
+                {
+                    pushQueueNode(iQueue, processLoad);
+                }
+            }
+        }
+
+        // refresh
+        SDL_SetRenderDrawColor(window->renderer, BGCLR.r, BGCLR.g, BGCLR.b, BGCLR.a);
+        SDL_RenderClear(window->renderer);
+        //
+
+        updateWIQueue(renderer, iQueueW, iQueue);
+        drawWIQueue(renderer, iQueueW);
+
+        updateRawW(renderer, ramW, ramPartitions);
+        drawRawW(renderer, ramW);
+
+        drawLegendW(renderer, legendW);
+        //
+        SDL_RenderPresent(window->renderer);
+        counter = 0;
     }
+
+    counter++;
 }
