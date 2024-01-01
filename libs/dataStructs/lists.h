@@ -20,7 +20,7 @@ List *initList()
     lst->head = NULL;
     lst->length = 0;
 }
-//queue mode
+// queue mode
 void addListNode1(List *lst, void *val)
 {
     ListNode *newElem = (ListNode *)malloc(sizeof(ListNode));
@@ -38,7 +38,7 @@ void addListNode1(List *lst, void *val)
     lst->queue = newElem;
     lst->length += 1;
 }
-//stack mode 
+// stack mode
 void addListNode2(List *lst, void *val)
 {
     ListNode *newElem = (ListNode *)malloc(sizeof(ListNode));
@@ -75,7 +75,8 @@ void removeListNode(List *lst, int indx)
     if (before != NULL)
     {
         before->next = current->next;
-        if(indx == lst->length -1){
+        if (indx == lst->length - 1)
+        {
             lst->queue = before;
         }
     }
@@ -96,3 +97,4 @@ void printList(List *lst)
     }
     printf("]");
 }
+

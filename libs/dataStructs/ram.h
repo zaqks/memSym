@@ -14,9 +14,9 @@ Ram *initRam()
 
     // create the partitions
     Partition *partition;
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
-        partition = initPartition(ramSize / 3);
+        partition = initPartition(ramSize / 4);
         addListNode1(ram->partitions, partition);
     }
 
