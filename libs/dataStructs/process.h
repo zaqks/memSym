@@ -54,4 +54,5 @@ void killProcess(Process *process)
 {
     free(process->arvTime);
     free(process);
+    
 }

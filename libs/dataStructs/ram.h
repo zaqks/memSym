@@ -45,10 +45,13 @@ int loadProcess(Ram *ram, Process *process, int strategy)
 
                     // create a new partition
                     int remaining = crntPart->size - process->size;
-                    crntPart->size = process->size;
+                    if (remaining > 0)
+                    {
+                        crntPart->size = process->size;
 
-                    crntPart = initPartition(remaining);
-                    addListNode1(ram->partitions, crntPart);
+                        crntPart = initPartition(remaining);
+                        addListNode1(ram->partitions, crntPart);
+                    }
 
                     return 1;
                 }
@@ -91,10 +94,94 @@ void tickRam(Ram *ram)
         current = current->next;
     }
     // delete completed processes
+    current = ram->partitions->head;
+    while (current)
+    {
+        currentPartition = (Partition *)current->val;
+        currentProcesses = (Array *)currentPartition->startAdr;
+        for (int i = 0; i < currentProcesses->length; i++)
+        {
+            currentProcess = (Process *)currentProcesses->arr[i].val;
+            if (!currentProcess->clocks)
+            {
+                // delete the proces
+                delArrayNode(currentProcesses, i);
+                i -= 1;
+                // free partition
+                if (!currentProcesses->length)
+                {
+                    currentPartition->occupied = false;
+                }
+            }
+        }
 
-    // free partitions
+        current = current->next;
+    }
+}
 
-    // merge them
+// merge only one
+int mergePartitions(Ram *ram)
+{
+    // merge random with largest
 
-    printf("tick ram\n");
+    ListNode *current = ram->partitions->head;
+    int currentIndx = 0;
+    Partition *currentPartition;
+
+    // get the largest partition
+    Partition *largest;
+    int largestIndx;
+
+    while (current)
+    {
+        currentPartition = (Partition *)current->val;
+
+        if (!currentPartition->occupied)
+        {
+            if (largest)
+            {
+                if (currentPartition->size > largest->size)
+                {
+                    largest = currentPartition;
+                    largestIndx = currentIndx;
+                }
+            }
+            else
+            {
+                // init
+                largest = currentPartition;
+                largestIndx = currentIndx;
+            }
+        }
+
+        current = current->next;
+        currentIndx++;
+    }
+
+    // merge the first
+    current = ram->partitions->head;
+    currentIndx = 0;
+
+    while (current)
+    {
+        currentPartition = (Partition *)current->val;
+
+        if (
+            !currentPartition->occupied)
+        {
+            if (currentIndx != largestIndx)
+            {
+
+                // merge
+                largest->size += currentPartition->size;
+                removeListNode(ram->partitions, currentIndx);
+                return 1;
+            }
+        }
+
+        current = current->next;
+        currentIndx++;
+    }
+
+    return 0;
 }

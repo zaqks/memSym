@@ -61,6 +61,9 @@ void loopFunc(Window *window)
                     pushQueueNode(iQueue, processLoad);
                 }
             }
+
+            //merge after the new process take an empty partition
+            mergePartitions(ramPartitions);
         }
 
         // refresh
