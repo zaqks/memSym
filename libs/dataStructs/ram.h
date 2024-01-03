@@ -25,6 +25,7 @@ Ram *initRam()
 
 int loadProcess(Ram *ram, Process *process, int strategy)
 {
-    
+
+    printf("process loaded\n");
     return 1;
 }

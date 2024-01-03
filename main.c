@@ -15,6 +15,7 @@ int main(int argc, char *args[])
     
     //widgets inits
     legendW = initLengendW(renderer);
+    statusW = initStatusW(renderer);
     iQueueW = initWIQueue();
     ramW = initRamW();
     

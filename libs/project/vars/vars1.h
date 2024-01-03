@@ -9,6 +9,8 @@ Ram *ramPartitions; // ram
 WidgetIQueue *iQueueW;
 WidgetRam *ramW;
 
+WidgetStatus *statusW;
+
 bool runProcessor = false;
 bool runQueue = false;
 
@@ -18,3 +20,4 @@ best f
 worst f
 */
 int loadingStrategy = 0;
+int priority = false;

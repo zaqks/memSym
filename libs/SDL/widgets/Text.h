@@ -51,27 +51,36 @@ void drawText(SDL_Renderer *renderer, Text *text)
 
 void updateText(SDL_Renderer *renderer, Text *widget, char *text)
 {
-
     char *text2 = text;
     if (text2[0] == *"\0")
     {
         text2 = " ";
     }
-    widget->text = text2;
 
-    SDL_Surface *surface = TTF_RenderText_Solid(widget->font, text2, widget->color);
-    SDL_DestroyTexture(widget->texture);
-    widget->texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    if (strcmp(text2, widget->text))
+    {
+        widget->text = text2;
 
-    widget->rect->w = surface->w;
-    widget->rect->h = surface->h;
+        SDL_Surface *surface = TTF_RenderText_Solid(widget->font, text2, widget->color);
+        SDL_DestroyTexture(widget->texture);
+        widget->texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+
+        widget->rect->w = surface->w;
+        widget->rect->h = surface->h;
+    }
 }
 
-void eraseText(Text *txt) {
-    
+void eraseText(Text *txt)
+{
+
     SDL_DestroyTexture(txt->texture);
     free(txt->rect);
     free(txt->text);
     free(txt);
+}
+
+void changeTextColor(Text *widget, SDL_Color color)
+{
+    widget->color = color;
 }

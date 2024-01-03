@@ -15,13 +15,14 @@ void eventFunc(SDL_Event e)
         case 101: // e first
             loadingStrategy = 0;
             break;
-        case 114: // r best 
+        case 114: // r best
             loadingStrategy = 1;
             break;
         case 116: // t worst
             loadingStrategy = 2;
             break;
         case 121: // y
+            priority = !priority;
             break;
         default:
             break;
@@ -69,6 +70,9 @@ void loopFunc(Window *window)
 
         updateRawW(renderer, ramW, ramPartitions);
         drawRawW(renderer, ramW);
+
+        updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority);
+        drawStatusW(renderer, statusW);
 
         drawLegendW(renderer, legendW);
         //
