@@ -1,3 +1,5 @@
+const int partnPdng = 10;
+
 typedef struct
 {
     SDL_Rect *mainRect;
@@ -30,19 +32,51 @@ WidgetPartition *initPartitionW(SDL_Renderer *renderer, Partition *partition, in
     char *addrVal = (char *)malloc(20);
     sprintf(addrVal, "%p", partition->startAdr);
     Text *addrTxt = createText(renderer, addrFont, NULL, 0, addrVal, WHITECLR, mainRect->x, mainRect->y);
-    addrTxt->rect->x += (w - addrTxt->rect->w) / 2;
-    addrTxt->rect->y += (w - addrTxt->rect->w) / 2;
+    // addrTxt->rect->x += (w - addrTxt->rect->w) / 2;
+    // addrTxt->rect->y += (w - addrTxt->rect->w) / 2;
+    addrTxt->rect->x += partnPdng;
+    addrTxt->rect->y += mainRect->h - addrTxt->rect->h - partnPdng;
 
     widget->addrTxt = addrTxt;
+
+    // processes
+    widget->processW = initList();
+
+    Array *processes = partition->startAdr;
+    Process *current;
+    WidgetProcess *processW;
+
+    int pH = 0;
+    if (processes->length)
+    {
+        pH = (mainRect->h - addrTxt->rect->h - partnPdng * 2) / processes->length;
+    }
+
+    for (int i = 0; i < processes->length; i++)
+    {
+        current = (Process *)(processes->arr[i].val);
+        processW = initProcessW(renderer, current, mainRect->w, pH, mainRect->x, mainRect->y + i * pH);
+        addListNode1(widget->processW, processW);
+    }
 
     return widget;
 }
 
 void drawPartitionW(SDL_Renderer *renderer, WidgetPartition *widget)
 {
+
     SDL_SetRenderDrawColor(renderer, WHITECLR.r, WHITECLR.g, WHITECLR.b, WHITECLR.a);
     // main rect
     SDL_RenderDrawRect(renderer, widget->mainRect);
+
+    // processes
+    ListNode *current = widget->processW->head;
+    while (current)
+    {
+        drawProcessW(renderer, current->val);
+        current = current->next;
+    }
+
     // addr txt
     drawText(renderer, widget->addrTxt);
 }
@@ -50,6 +84,12 @@ void drawPartitionW(SDL_Renderer *renderer, WidgetPartition *widget)
 void erasePartitionW(WidgetPartition *widget)
 {
     // processes
+    ListNode *current = widget->processW->head;
+    while (current != NULL)
+    {
+        eraseProcessW(current->val);
+        current = current->next;
+    }
 
     // main rect
     free(widget->mainRect);
@@ -59,5 +99,3 @@ void erasePartitionW(WidgetPartition *widget)
     // widget
     free(widget);
 }
-
- 

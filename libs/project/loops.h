@@ -50,8 +50,11 @@ void loopFunc(Window *window)
         // process
         if (runProcessor)
         {
+            tickRam(ramPartitions);
+
             if (iQueue->length > 0)
             {
+
                 processLoad = (Process *)popQueueNode(iQueue);
                 if (!loadProcess(ramPartitions, processLoad, loadingStrategy))
                 {

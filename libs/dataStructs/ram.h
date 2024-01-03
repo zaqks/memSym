@@ -18,6 +18,7 @@ Ram *initRam()
     {
         partition = initPartition(ramSize / 4);
         addListNode1(ram->partitions, partition);
+        ram->freeSpace -= ramSize / 4;
     }
 
     return ram;
@@ -25,7 +26,35 @@ Ram *initRam()
 
 int loadProcess(Ram *ram, Process *process, int strategy)
 {
+    // first fit
+    ListNode *current = ram->partitions->head;
+    Partition *crntPart;
+    while (current)
+    {
+        crntPart = (Partition *)current->val;
+        if (!crntPart->occupied)
+        {
+            if (crntPart->size >= process->size)
+            {
+                pushArrayNode(crntPart->startAdr, process);
+                crntPart->occupied = true;
 
-    printf("process loaded\n");
-    return 1;
+                return 1;
+            }
+        }
+        current = current->next;
+    }
+
+    return 0;
+}
+
+void tickRam(Ram *ram)
+{
+    ListNode *current = ram->partitions->head;
+    while (current)
+    {
+        current = current->next;
+    }
+
+    printf("tick ram\n");
 }
