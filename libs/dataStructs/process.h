@@ -1,3 +1,4 @@
+#define MaxProcCLK 20
 int lastProcessId = 0;
 
 typedef struct
@@ -29,18 +30,17 @@ Process *initProcess()
     lastProcessId += 1;
 
     // set the clocks + exeTime
-    process->clocks = randomNum(10, 100);
+    process->clocks = randomNum(10, MaxProcCLK);
     process->exeTime = (process->clocks) / 1000; // in seconds
 
     // set the size
     process->size = randomNum(1, 6) * sizeof(Process);
 
-    //set a color
+    // set a color
     process->color.r = randomNum(0, 255);
     process->color.g = randomNum(0, 255);
     process->color.b = randomNum(0, 255);
     process->color.a = 255;
-
 
     return process;
 }
@@ -50,7 +50,8 @@ void pushProcessQueue(Queue *queue, Process *process)
     pushQueueNode(queue, process);
 }
 
-void killProcess(Process*process){
+void killProcess(Process *process)
+{
     free(process->arvTime);
     free(process);
 }

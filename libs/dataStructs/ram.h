@@ -1,4 +1,4 @@
-const int ramSize = 1024 * 1024; // 1024Kb
+const int ramSize = 1024; // 1KB
 
 typedef struct
 {
@@ -26,23 +26,45 @@ Ram *initRam()
 
 int loadProcess(Ram *ram, Process *process, int strategy)
 {
-    // first fit
-    ListNode *current = ram->partitions->head;
-    Partition *crntPart;
-    while (current)
-    {
-        crntPart = (Partition *)current->val;
-        if (!crntPart->occupied)
-        {
-            if (crntPart->size >= process->size)
-            {
-                pushArrayNode(crntPart->startAdr, process);
-                crntPart->occupied = true;
 
-                return 1;
+    switch (strategy)
+    {
+    case 0: // first fit
+
+        ListNode *current = ram->partitions->head;
+        Partition *crntPart;
+        while (current)
+        {
+            crntPart = (Partition *)current->val;
+            if (!crntPart->occupied)
+            {
+                if (crntPart->size >= process->size)
+                {
+                    pushArrayNode(crntPart->startAdr, process);
+                    crntPart->occupied = true;
+
+                    // create a new partition
+                    int remaining = crntPart->size - process->size;
+                    crntPart->size = process->size;
+
+                    crntPart = initPartition(remaining);
+                    addListNode1(ram->partitions, crntPart);
+
+                    return 1;
+                }
             }
+            current = current->next;
         }
-        current = current->next;
+
+        break;
+    case 1: // best fit
+
+        break;
+    case 2: // worst fit
+
+        break;
+    default:
+        break;
     }
 
     return 0;
@@ -50,11 +72,29 @@ int loadProcess(Ram *ram, Process *process, int strategy)
 
 void tickRam(Ram *ram)
 {
+    // tick processes
     ListNode *current = ram->partitions->head;
+    Partition *currentPartition;
+    Array *currentProcesses;
+    Process *currentProcess;
+
     while (current)
     {
+        currentPartition = (Partition *)current->val;
+        currentProcesses = (Array *)currentPartition->startAdr;
+        for (int i = 0; i < currentProcesses->length; i++)
+        {
+            currentProcess = (Process *)currentProcesses->arr[i].val;
+            currentProcess->clocks -= 1;
+        }
+
         current = current->next;
     }
+    // delete completed processes
+
+    // free partitions
+
+    // merge them
 
     printf("tick ram\n");
 }

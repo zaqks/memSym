@@ -30,7 +30,7 @@ WidgetPartition *initPartitionW(SDL_Renderer *renderer, Partition *partition, in
 
     // addr txt
     char *addrVal = (char *)malloc(20);
-    sprintf(addrVal, "%p", partition->startAdr);
+    sprintf(addrVal, "%p", partition->startAdr->arr);
     Text *addrTxt = createText(renderer, addrFont, NULL, 0, addrVal, WHITECLR, mainRect->x, mainRect->y);
     // addrTxt->rect->x += (w - addrTxt->rect->w) / 2;
     // addrTxt->rect->y += (w - addrTxt->rect->w) / 2;
