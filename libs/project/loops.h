@@ -37,6 +37,10 @@ void loopFunc(Window *window)
 
     if (counter >= CLK / REFRESHRATE)
     {
+        //print the ram
+        printRam(ramPartitions);
+
+
         // add processes to iQueue
         if (runQueue)
         {
@@ -61,8 +65,8 @@ void loopFunc(Window *window)
                     pushQueueNode(iQueue, processLoad);
                 }
             }
-
-            //merge after the new process take an empty partition
+            
+            // merge after the new process take an empty partition
             mergePartitions(ramPartitions);
         }
 

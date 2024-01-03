@@ -1,0 +1,1 @@
+const int CLK = 500; // ms

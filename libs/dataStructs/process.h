@@ -6,7 +6,7 @@ typedef struct
     int id;
     char *arvTime;
     int clocks;
-    int exeTime;
+    float exeTime; // in s
     int size;
 
     SDL_Color color;
@@ -31,7 +31,7 @@ Process *initProcess()
 
     // set the clocks + exeTime
     process->clocks = randomNum(10, MaxProcCLK);
-    process->exeTime = (process->clocks) / 1000; // in seconds
+    process->exeTime = (float)((process->clocks) * CLK) / 1000; // in s
 
     // set the size
     process->size = randomNum(1, 6) * sizeof(Process);
@@ -54,5 +54,9 @@ void killProcess(Process *process)
 {
     free(process->arvTime);
     free(process);
-    
+}
+
+void printProcess(Process *process)
+{
+    printf("# process%d (~%.1fs remaing)\n", process->id, process->exeTime);
 }

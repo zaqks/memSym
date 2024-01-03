@@ -63,3 +63,14 @@ void printArray(Array *arr)
 
     printf("]\n");
 }
+
+void freeArray(Array *arr)
+{
+    int length = arr->length;
+    for (int i = 0; i < length; i++)
+    {
+        free(arr->arr[i].val);
+    }
+
+    free(arr);
+}

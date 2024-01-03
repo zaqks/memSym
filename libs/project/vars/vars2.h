@@ -1,3 +1,21 @@
-#define iQueueLength 10
+Window *window;
+SDL_Renderer *renderer;
 
-WidgetLegend *legendW;
+Queue *iQueue; // instruction queue
+Ram *ramPartitions; // ram
+
+WidgetIQueue *iQueueW;
+WidgetRam *ramW;
+
+WidgetStatus *statusW;
+
+bool runProcessor = false;
+bool runQueue = false;
+
+/*
+first f
+best f
+worst f
+*/
+int loadingStrategy = 0;
+int priority = false;

@@ -89,6 +89,7 @@ void tickRam(Ram *ram)
         {
             currentProcess = (Process *)currentProcesses->arr[i].val;
             currentProcess->clocks -= 1;
+            currentProcess->exeTime -= (float)CLK / 1000;
         }
 
         current = current->next;
@@ -122,66 +123,86 @@ void tickRam(Ram *ram)
 // merge only one
 int mergePartitions(Ram *ram)
 {
-    // merge random with largest
+    if (ram->partitions->length)
+    { // merge random with largest
 
-    ListNode *current = ram->partitions->head;
-    int currentIndx = 0;
-    Partition *currentPartition;
+        ListNode *current = ram->partitions->head;
+        int currentIndx = 0;
+        Partition *currentPartition;
 
-    // get the largest partition
-    Partition *largest;
-    int largestIndx;
+        // get the largest partition
+        Partition *largest;
+        int largestIndx;
 
-    while (current)
-    {
-        currentPartition = (Partition *)current->val;
-
-        if (!currentPartition->occupied)
+        while (current)
         {
-            if (largest)
+            currentPartition = (Partition *)current->val;
+
+            if (!currentPartition->occupied)
             {
-                if (currentPartition->size > largest->size)
+                if (largest)
                 {
+                    if (currentPartition->size > largest->size)
+                    {
+                        largest = currentPartition;
+                        largestIndx = currentIndx;
+                    }
+                }
+                else
+                {
+                    // init
                     largest = currentPartition;
                     largestIndx = currentIndx;
                 }
             }
-            else
-            {
-                // init
-                largest = currentPartition;
-                largestIndx = currentIndx;
-            }
+
+            current = current->next;
+            currentIndx++;
         }
 
-        current = current->next;
-        currentIndx++;
-    }
+        // merge the first
+        current = ram->partitions->head;
+        currentIndx = 0;
 
-    // merge the first
-    current = ram->partitions->head;
-    currentIndx = 0;
-
-    while (current)
-    {
-        currentPartition = (Partition *)current->val;
-
-        if (
-            !currentPartition->occupied)
+        while (current)
         {
-            if (currentIndx != largestIndx)
+            currentPartition = (Partition *)current->val;
+
+            if (
+                !currentPartition->occupied)
             {
+                if (currentIndx != largestIndx)
+                {
+                    // merge
+                    largest->size += currentPartition->size;
+                    // kill the partition
+                    freeArray(currentPartition->startAdr);
+                    removeListNode(ram->partitions, currentIndx);
 
-                // merge
-                largest->size += currentPartition->size;
-                removeListNode(ram->partitions, currentIndx);
-                return 1;
+                    return 1;
+                }
             }
-        }
 
-        current = current->next;
-        currentIndx++;
+            current = current->next;
+            currentIndx++;
+        }
     }
 
     return 0;
+}
+
+void printRam(Ram *ram)
+{
+    printf("__________RAM__________\n\n");
+
+    ListNode *currentPart = ram->partitions->head;
+
+    while (currentPart)
+    {
+        printPartition(currentPart->val);
+
+        currentPart = currentPart->next;
+    }
+
+    printf("_______________________\n\n\n");
 }

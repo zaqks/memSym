@@ -5,6 +5,7 @@
 #include "widgets/styleVars.h"
 
 #include "../dataStructs/queue.h"
+#include "vars/vars0.h"
 #include "../dataStructs/process.h"
 
 #include "../dataStructs/arrays.h"
@@ -15,7 +16,7 @@
 
 #include "widgets/legend.h"
 
-#include "vars/vars2.h"
+#include "vars/vars1.h"
 #include "widgets/status.h"
 #include "widgets/process.h"
 #include "widgets/iQueue.h"
@@ -23,6 +24,6 @@
 #include "widgets/ram.h"
 
 
-#include "vars/vars1.h"
+#include "vars/vars2.h"
 
 #include "loops.h"

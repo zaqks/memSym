@@ -1,23 +1,3 @@
-const int CLK = 1000; // ms
+#define iQueueLength 10
 
-Window *window;
-SDL_Renderer *renderer;
-
-Queue *iQueue; // instruction queue
-Ram *ramPartitions; // ram
-
-WidgetIQueue *iQueueW;
-WidgetRam *ramW;
-
-WidgetStatus *statusW;
-
-bool runProcessor = false;
-bool runQueue = false;
-
-/*
-first f
-best f
-worst f
-*/
-int loadingStrategy = 0;
-int priority = false;
+WidgetLegend *legendW;
