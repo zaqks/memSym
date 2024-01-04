@@ -12,6 +12,7 @@ WidgetStatus *statusW;
 bool runProcessor = false;
 bool runQueue = false;
 
+
 /*
 first f
 best f

@@ -120,72 +120,39 @@ void tickRam(Ram *ram)
     }
 }
 
-// merge only one
+// merge randomly
 int mergePartitions(Ram *ram)
 {
-    if (ram->partitions->length)
-    { // merge random with largest
+    List *partitions = ram->partitions;
+    ListNode *current = partitions->head;
+    int currentIndx = 0;
 
-        ListNode *current = ram->partitions->head;
-        int currentIndx = 0;
-        Partition *currentPartition;
+    Partition *currentPartition;
+    Partition *mergeWith;
 
-        // get the largest partition
-        Partition *largest;
-        int largestIndx;
-
-        while (current)
+    while (current)
+    {
+        currentPartition = current->val;
+        if (!currentPartition->occupied)
         {
-            currentPartition = (Partition *)current->val;
-
-            if (!currentPartition->occupied)
+            if (mergeWith)
             {
-                if (largest)
-                {
-                    if (currentPartition->size > largest->size)
-                    {
-                        largest = currentPartition;
-                        largestIndx = currentIndx;
-                    }
-                }
-                else
-                {
-                    // init
-                    largest = currentPartition;
-                    largestIndx = currentIndx;
-                }
-            }
+                // increase the size of the 'merge with' by the current
+                mergeWith->size += currentPartition->size;
+                // delete the current
+                freeArray(currentPartition->startAdr);
+                removeListNode(partitions, currentIndx);
 
-            current = current->next;
-            currentIndx++;
+                return 1;
+            }
+            else
+            {
+                mergeWith = currentPartition;
+            }
         }
 
-        // merge the first
-        current = ram->partitions->head;
-        currentIndx = 0;
-
-        while (current)
-        {
-            currentPartition = (Partition *)current->val;
-
-            if (
-                !currentPartition->occupied)
-            {
-                if (currentIndx != largestIndx)
-                {
-                    // merge
-                    largest->size += currentPartition->size;
-                    // kill the partition
-                    freeArray(currentPartition->startAdr);
-                    removeListNode(ram->partitions, currentIndx);
-
-                    return 1;
-                }
-            }
-
-            current = current->next;
-            currentIndx++;
-        }
+        current = current->next;
+        currentIndx += 1;
     }
 
     return 0;

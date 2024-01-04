@@ -82,7 +82,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
         current = current->next;
     }
 
-    // create the partitions
+    // calc dims
     int pW = (widget->grpRect->w - (ram->partitions->length + 1) * MAINPADDING) / ram->partitions->length;
     if (pW > SCREEN_WIDTH / 10)
     {
@@ -93,15 +93,25 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     int x = widget->grpRect->x + (widget->grpRect->w - (pW + MAINPADDING) * ram->partitions->length + MAINPADDING) / 2;
     int y = widget->grpRect->y + MAINPADDING;
 
+    // create the partitions
     current = ram->partitions->head;
     WidgetPartition *partitionW;
+    float ratio;
 
     for (int i = 0; i < ram->partitions->length; i++)
     {
-        partitionW = initPartitionW(renderer, current->val, pW, pH * ((float)((Partition *)(current->val))->size / maxSize), x + i * pW + (i)*MAINPADDING, y);
+        
+        if (maxSize)
+        {
+            ratio = (float)((Partition *)(current->val))->size / maxSize;
+        }
+        else
+        {
+            ratio = 0;
+        }
+
+        partitionW = initPartitionW(renderer, current->val, pW, pH * ratio, x + i * pW + (i)*MAINPADDING, y);
         addListNode1(widget->partitionsW, partitionW);
         current = current->next;
     }
-
-    // printf("update ram\n");
 }

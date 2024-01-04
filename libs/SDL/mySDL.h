@@ -71,7 +71,7 @@ void killWin(Window *win)
     free(win);
 }
 
-void eventLoop(Window *win, void (*eFunc)(SDL_Event e), void (*func)(Window *win))
+void mainLoop(Window *win, void (*eFunc)(SDL_Event e), void (*func)(Window *win))
 {
     SDL_Event e;
     bool quit = false;

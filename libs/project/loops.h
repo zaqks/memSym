@@ -3,6 +3,7 @@ void eventFunc(SDL_Event e)
     // keyboard events
     if (e.type == SDL_KEYDOWN)
     {
+
         switch (e.key.keysym.sym)
         {
 
@@ -32,14 +33,14 @@ void eventFunc(SDL_Event e)
 Process *processLoad;
 
 int counter = CLK / REFRESHRATE;
+
 void loopFunc(Window *window)
 {
-
     if (counter >= CLK / REFRESHRATE)
     {
-        //print the ram
-        printRam(ramPartitions);
 
+        // print the ram
+        // printRam(ramPartitions);
 
         // add processes to iQueue
         if (runQueue)
@@ -51,7 +52,7 @@ void loopFunc(Window *window)
             }
         }
 
-        // process
+        // processor
         if (runProcessor)
         {
             tickRam(ramPartitions);
@@ -65,7 +66,7 @@ void loopFunc(Window *window)
                     pushQueueNode(iQueue, processLoad);
                 }
             }
-            
+
             // merge after the new process take an empty partition
             mergePartitions(ramPartitions);
         }
@@ -79,6 +80,7 @@ void loopFunc(Window *window)
         drawWIQueue(renderer, iQueueW);
 
         updateRawW(renderer, ramW, ramPartitions);
+
         drawRawW(renderer, ramW);
 
         updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority);
