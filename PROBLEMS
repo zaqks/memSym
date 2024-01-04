@@ -1,0 +1,3 @@
+libs/SDL/widgets/Text.h lin3 64:
+u need to free the old text (u have and invalid size problem)
+this will fix the small memory leak u're having (~+0.1MB\s)

@@ -39,9 +39,6 @@ void loopFunc(Window *window)
     if (counter >= CLK / REFRESHRATE)
     {
 
-        // print the ram
-        // printRam(ramPartitions);
-
         // add processes to iQueue
         if (runQueue)
         {
@@ -55,7 +52,7 @@ void loopFunc(Window *window)
         // processor
         if (runProcessor)
         {
-            tickRam(ramPartitions);
+            tickRam(ramPartitions);   
 
             if (iQueue->length > 0)
             {
@@ -67,9 +64,14 @@ void loopFunc(Window *window)
                 }
             }
 
-            // merge after the new process take an empty partition
+            // merge after the new process takes an empty partition
+            
             mergePartitions(ramPartitions);
+            
         }
+
+        // print the ram
+        printRam(ramPartitions);
 
         // refresh
         SDL_SetRenderDrawColor(window->renderer, BGCLR.r, BGCLR.g, BGCLR.b, BGCLR.a);
@@ -80,7 +82,6 @@ void loopFunc(Window *window)
         drawWIQueue(renderer, iQueueW);
 
         updateRawW(renderer, ramW, ramPartitions);
-
         drawRawW(renderer, ramW);
 
         updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority);

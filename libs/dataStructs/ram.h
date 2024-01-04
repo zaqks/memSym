@@ -121,41 +121,74 @@ void tickRam(Ram *ram)
 }
 
 // merge randomly
-int mergePartitions(Ram *ram)
+void mergePartitions(Ram *ram)
 {
+
     List *partitions = ram->partitions;
     ListNode *current = partitions->head;
-    int currentIndx = 0;
 
     Partition *currentPartition;
-    Partition *mergeWith;
+    int freeNum = 0;
 
+    // get freeNum
     while (current)
     {
-        currentPartition = current->val;
+        currentPartition = (Partition *)current->val;
         if (!currentPartition->occupied)
         {
-            if (mergeWith)
-            {
-                // increase the size of the 'merge with' by the current
-                mergeWith->size += currentPartition->size;
-                // delete the current
-                freeArray(currentPartition->startAdr);
-                removeListNode(partitions, currentIndx);
-
-                return 1;
-            }
-            else
-            {
-                mergeWith = currentPartition;
-            }
+            freeNum += 1;
         }
 
         current = current->next;
-        currentIndx += 1;
     }
 
-    return 0;
+    //
+    current = partitions->head;
+
+    Partition *toDel;
+    int toDelIndx;
+
+    if (freeNum > 1)
+    {
+        // get the one to free
+        for (int i = 0; i < partitions->length; i++)
+        {
+
+            currentPartition = (Partition *)current->val;
+            if (!currentPartition->occupied)
+            {
+                toDel = currentPartition;
+                toDelIndx = i;
+                break;
+            }
+
+            current = current->next;
+        }
+
+        // merge
+        current = partitions->head;
+        for (int i = 0; i < partitions->length; i++)
+        {
+
+            currentPartition = (Partition *)current->val;
+
+            if (!currentPartition->occupied)
+            {
+                if (i != toDelIndx)
+                {
+                    // merge toDel with the current
+                    currentPartition->size += toDel->size;
+                    //delete to del
+                    freeArray(toDel->startAdr);
+                    removeListNode(partitions, toDelIndx);
+
+                    break;
+                }
+            }
+
+            current = current->next;
+        }
+    }
 }
 
 void printRam(Ram *ram)

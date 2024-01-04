@@ -95,7 +95,6 @@ void erasePartitionW(WidgetPartition *widget)
     free(widget->mainRect);
     // txt
     eraseText(widget->addrTxt);
-
     // widget
     free(widget);
 }

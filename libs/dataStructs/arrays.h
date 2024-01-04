@@ -71,6 +71,6 @@ void freeArray(Array *arr)
     {
         free(arr->arr[i].val);
     }
-
+    free(arr->arr);
     free(arr);
 }

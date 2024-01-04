@@ -59,6 +59,10 @@ void updateText(SDL_Renderer *renderer, Text *widget, char *text)
 
     if (strcmp(text2, widget->text))
     {
+        
+        
+        //free(widget->text);
+
         widget->text = text2;
 
         SDL_Surface *surface = TTF_RenderText_Solid(widget->font, text2, widget->color);
@@ -73,7 +77,6 @@ void updateText(SDL_Renderer *renderer, Text *widget, char *text)
 
 void eraseText(Text *txt)
 {
-
     SDL_DestroyTexture(txt->texture);
     free(txt->rect);
     free(txt->text);
