@@ -1,3 +1,4 @@
+#include "SDL2/SDL_mixer.h"
 #define soundsNum 4
 
 char *soundsPaths[soundsNum] = {"assets/sounds/start1.mp3", "assets/sounds/stop1.mp3", "assets/sounds/start2.mp3", "assets/sounds/stop2.mp3"};

@@ -1,5 +1,3 @@
-#include "time.h"
-
 #include "../SDL/mySDL.h"
 
 #include "widgets/styleVars.h"
@@ -29,7 +27,6 @@
 
 #include "vars/vars2.h"
 
-#include "SDL2/SDL_mixer.h"
 #include "vars/sounds.h"
 
 #include "loops.h"

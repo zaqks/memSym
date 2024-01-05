@@ -1,3 +1,4 @@
+#include <time.h>
 #define MaxProcCLK 20
 int lastProcessId = 0;
 
