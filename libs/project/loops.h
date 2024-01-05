@@ -129,7 +129,7 @@ void loopFunc(Window *window)
 
             if (mergePartitions(ramPartitions)) // if merged
             {
-                playSound(0, sound); // if this is a normal tick
+                playSound(0, sound);
             };
         }
 
