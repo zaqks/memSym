@@ -8,6 +8,16 @@ Stack *initStack()
     return (Stack *)initList();
 }
 
+int stackLength(Stack *stk)
+{
+    return getListLength(stk);
+}
+
+int emptyStack(Stack *stk)
+{
+    return !getListLength(stk);
+}
+
 void pushStackNode(Stack *stk, void *val)
 {
     addListNode2(stk, val);
@@ -27,23 +37,17 @@ void printStack(Stack *stk)
     //
     Stack *tmp = initStack();
     void *val;
-    int len = stk->length;
 
-    while (len > 0)
+    while (!emptyStack(stk))
     {
         val = popStackNode(stk);
         pushStackNode(tmp, val);
         printf("%p\n__\n", val);
-        len--;
     }
     // refill
-    len = tmp->length;
-    while (len > 0)
+    while (!emptyStack(tmp))
     {
-        val = popStackNode(tmp);
-        pushStackNode(stk, val);
-
-        len--;
+        pushStackNode(stk, popStackNode(tmp));
     }
 
     free(tmp);

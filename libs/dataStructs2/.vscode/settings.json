@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "process.h": "c",
+        "partition.h": "c",
+        "ram.h": "c"
+    }
+}
