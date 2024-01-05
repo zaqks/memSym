@@ -325,3 +325,77 @@ void printRam(Ram *ram)
 
     printf("_______________________\n\n\n");
 }
+
+/*
+int mergePartitions(Ram *ram) // returns  merged
+{
+
+    List *partitions = ram->partitions;
+    ListNode *current = partitions->head;
+
+    Partition *currentPartition;
+    int freeNum = 0;
+
+    // get freeNum
+    while (current)
+    {
+        currentPartition = (Partition *)current->val;
+        if (!currentPartition->occupied)
+        {
+            freeNum += 1;
+        }
+
+        current = current->next;
+    }
+
+    //
+    current = partitions->head;
+
+    Partition *toDel;
+    int toDelIndx;
+
+    if (freeNum > 1)
+    {
+        // get the one to free
+        for (int i = 0; i < partitions->length; i++)
+        {
+
+            currentPartition = (Partition *)current->val;
+            if (!currentPartition->occupied)
+            {
+                toDel = currentPartition;
+                toDelIndx = i;
+                break;
+            }
+
+            current = current->next;
+        }
+
+        // merge
+        current = partitions->head;
+        for (int i = 0; i < partitions->length; i++)
+        {
+
+            currentPartition = (Partition *)current->val;
+
+            if (!currentPartition->occupied)
+            {
+                if (i != toDelIndx)
+                {
+                    // merge toDel with the current
+                    currentPartition->size += toDel->size;
+                    // delete to del
+                    freeArray(toDel->startAdr);
+                    removeListNode(partitions, toDelIndx);
+
+                    // break;
+                    return 1;
+                }
+            }
+
+            current = current->next;
+        }
+    }
+    return 0;
+}
+*/

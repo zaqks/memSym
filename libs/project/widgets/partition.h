@@ -1,4 +1,4 @@
-const int partnPdng = 10;
+const int partnPdng = 8;
 
 typedef struct
 {

@@ -3,10 +3,12 @@ typedef struct
     SDL_Color color;
     SDL_Rect *mainRect;
     Text *szTxt;
+    Text *clkTxt;
+    Text *priorityTxt;
 
     int id;
     Text *idTxt;
-    Text *clkTxt;
+
 } WidgetProcess;
 
 #define txtPadding 5
@@ -61,6 +63,14 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     clkText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
     widget->clkTxt = clkText;
 
+    // priotrity text
+    char *prVal = (char *)malloc(2);
+    sprintf(prVal, "%d", process->priority);
+
+    Text *prText = createText(renderer, processFont, NULL, 0, prVal, widget->color, x, idText->rect->y);
+    prText->rect->x += mainRect->w - prText->rect->w - txtPadding;
+    widget->priorityTxt = prText;
+
     return widget;
 }
 
@@ -77,6 +87,7 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
     drawText(renderer, process->idTxt);
     drawText(renderer, process->szTxt);
     drawText(renderer, process->clkTxt);
+    drawText(renderer, process->priorityTxt);
 }
 
 void eraseProcessW(WidgetProcess *process)
