@@ -6,7 +6,7 @@
 #define FULLSCREEN false
 
 int SCREEN_WIDTH = 1024;
-int SCREEN_HEIGHT = 768;
+int SCREEN_HEIGHT = 780;
 
 typedef struct
 {

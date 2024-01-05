@@ -64,8 +64,17 @@ WidgetPartition *initPartitionW(SDL_Renderer *renderer, Partition *partition, in
 
 void drawPartitionW(SDL_Renderer *renderer, WidgetPartition *widget)
 {
+    SDL_Color partitonCLR;
+    if (widget->processW->length)
+    {
+        partitonCLR = REDCLR;
+    }
+    else
+    {
+        partitonCLR = GREENCLR;
+    }
 
-    SDL_SetRenderDrawColor(renderer, WHITECLR.r, WHITECLR.g, WHITECLR.b, WHITECLR.a);
+    SDL_SetRenderDrawColor(renderer, partitonCLR.r, partitonCLR.g, partitonCLR.b, partitonCLR.a);
     // main rect
     SDL_RenderDrawRect(renderer, widget->mainRect);
 

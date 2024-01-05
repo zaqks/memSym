@@ -11,7 +11,7 @@ WidgetIStack *initWIStack()
 
     // mainRect
     SDL_Rect *mainRect = malloc(sizeof(SDL_Rect));
-    mainRect->w = SCREEN_WIDTH / 10;
+    mainRect->w = SCREEN_WIDTH / 20;
     mainRect->w *= iStackLength;
     mainRect->w += (iStackLength - 1) * MAINPADDING / 2;
 
