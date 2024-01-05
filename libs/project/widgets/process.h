@@ -96,5 +96,6 @@ void eraseProcessW(WidgetProcess *process)
     eraseText(process->idTxt);
     eraseText(process->szTxt);
     eraseText(process->clkTxt);
+    eraseText(process->priorityTxt);
     free(process);
 }
