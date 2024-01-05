@@ -187,8 +187,9 @@ int loadProcess(Ram *ram, Process *process, int strategy)
     return 0;
 }
 
-void tickRam(Ram *ram)
+int tickRam(Ram *ram) // returns if something was deleted
 {
+    bool deleted = false;
     // tick processes
     ListNode *current = ram->partitions->head;
     Partition *currentPartition;
@@ -222,6 +223,7 @@ void tickRam(Ram *ram)
                 // delete the proces
                 delArrayNode(currentProcesses, i);
                 i -= 1;
+                deleted = true;
                 // free partition
                 if (!currentProcesses->length)
                 {
@@ -232,10 +234,11 @@ void tickRam(Ram *ram)
 
         current = current->next;
     }
+    return deleted;
 }
 
 // merge randomly
-void mergePartitions(Ram *ram)
+int mergePartitions(Ram *ram) // returns  merged
 {
 
     List *partitions = ram->partitions;
@@ -296,13 +299,15 @@ void mergePartitions(Ram *ram)
                     freeArray(toDel->startAdr);
                     removeListNode(partitions, toDelIndx);
 
-                    break;
+                    // break;
+                    return 1;
                 }
             }
 
             current = current->next;
         }
     }
+    return 0;
 }
 
 void printRam(Ram *ram)

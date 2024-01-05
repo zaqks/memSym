@@ -1,11 +1,11 @@
 Window *window;
 SDL_Renderer *renderer;
 
-//Queue *iQueue;      // instruction queue
+// Queue *iQueue;      // instruction queue
 Stack *iStack;      // iQueue Stack
 Ram *ramPartitions; // ram
 
-//WidgetIQueue *iQueueW;
+// WidgetIQueue *iQueueW;
 
 WidgetRam *ramW;
 
@@ -14,10 +14,6 @@ WidgetStatus *statusW;
 bool runProcessor = false;
 bool runQueue = false;
 
-/*
-first f
-best f
-worst f
-*/
-int loadingStrategy = 0;
-int priority = false;
+int loadingStrategy = 0; /*first f best f worst f*/
+bool priority = false;
+bool sound = true;

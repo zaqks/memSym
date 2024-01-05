@@ -1,4 +1,4 @@
-#define StatusNum 6
+#define StatusNum 7
 char *statusVals[StatusNum] = {
     "processor ",
     "queue ",
@@ -6,6 +6,7 @@ char *statusVals[StatusNum] = {
     "best fit ",
     "worst fit ",
     "priority",
+    "sound",
 };
 
 const int statusPadding = 10;
@@ -79,7 +80,7 @@ WidgetStatus *initStatusW(SDL_Renderer *renderer)
     return status;
 }
 
-void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor, bool queue, int stategy, int priority)
+void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor, bool queue, bool stategy, int priority, bool sound)
 {
     // processor + queue
     int vals[2] = {processor, queue};
@@ -115,6 +116,18 @@ void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor,
 
     // priority
     if (priority)
+    {
+        changeTextColor(widget->vals[StatusNum - 2], GREENCLR);
+        updateText(renderer, widget->vals[StatusNum - 2], "<on>");
+    }
+    else
+    {
+        changeTextColor(widget->vals[StatusNum - 2], REDCLR);
+        updateText(renderer, widget->vals[StatusNum - 2], "<off>");
+    }
+    
+    // sound
+    if (sound)
     {
         changeTextColor(widget->vals[StatusNum - 1], GREENCLR);
         updateText(renderer, widget->vals[StatusNum - 1], "<on>");

@@ -25,6 +25,11 @@ void eventFunc(SDL_Event e)
         case 121: // y
             priority = !priority;
             break;
+
+        case 117: // u
+            sound = !sound;
+            break;
+
         default:
             break;
         }
@@ -78,7 +83,14 @@ void loopFunc(Window *window)
 
         if (runProcessor)
         {
-            tickRam(ramPartitions);
+            if (tickRam(ramPartitions)) // if a process if completed
+            {
+                playSound(3, sound);
+            }
+            else
+            {
+                playSound(1, sound); // if this is a normal tick
+            }
 
             tmpStack = initStack();
             while (iStack->length)
@@ -89,9 +101,14 @@ void loopFunc(Window *window)
                 if (currentQueue->length)
                 {
                     currentProcess = (Process *)popQueueNode(currentQueue);
+                    // load process
                     if (!loadProcess(ramPartitions, currentProcess, loadingStrategy))
                     {
                         pushQueueNode(currentQueue, currentProcess);
+                    }
+                    else
+                    {
+                        playSound(2, sound); // start execution
                     }
 
                     if (priority)
@@ -110,7 +127,10 @@ void loopFunc(Window *window)
 
             // merge after the new process takes an empty partition
 
-            mergePartitions(ramPartitions);
+            if (mergePartitions(ramPartitions)) // if merged
+            {
+                playSound(0, sound); // if this is a normal tick
+            };
         }
 
         // print the ram
@@ -130,7 +150,7 @@ void loopFunc(Window *window)
         updateRawW(renderer, ramW, ramPartitions);
         drawRawW(renderer, ramW);
 
-        updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority);
+        updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority, sound);
         drawStatusW(renderer, statusW);
 
         drawLegendW(renderer, legendW);

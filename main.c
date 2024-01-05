@@ -24,6 +24,10 @@ int main(int argc, char *args[])
 
     iStackW = initWIStack();
     ramW = initRamW();
+    
+    //init sound
+    initSounds();
+
 
     mainLoop(window, eventFunc, loopFunc);
 

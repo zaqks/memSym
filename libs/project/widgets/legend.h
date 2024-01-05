@@ -1,10 +1,11 @@
-#define LegendsNum 8
+#define LegendsNum 9
 char *legends[LegendsNum] = {"<q> toggle processor",
                              "<w> toggle queue",
                              "<e> first fit",
                              "<r> best fit",
                              "<t> worst fit",
                              "<y> toggle priority",
+                             "<u> toggle sound",
                              "",
                              "<Esc> exit"};
 
