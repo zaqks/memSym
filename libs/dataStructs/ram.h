@@ -28,6 +28,9 @@ int loadProcess(Ram *ram, Process *process, int strategy)
 {
     ListNode *current;
     Partition *crntPart;
+
+    int difference;
+
     switch (strategy)
     {
     case 0: // first fit
@@ -43,12 +46,12 @@ int loadProcess(Ram *ram, Process *process, int strategy)
                     crntPart->occupied = true;
 
                     // create a new partition
-                    int remaining = crntPart->size - process->size;
-                    if (remaining > 0)
+                    difference = crntPart->size - process->size;
+                    if (difference > 0)
                     {
                         crntPart->size = process->size;
 
-                        crntPart = initPartition(remaining);
+                        crntPart = initPartition(difference);
                         addListNode1(ram->partitions, crntPart);
                     }
 
@@ -60,14 +63,72 @@ int loadProcess(Ram *ram, Process *process, int strategy)
 
         break;
     case 1: // best fit
-
+        difference = 0;
         // get hte largest partition  first the init the difference with it
+        current = ram->partitions->head;
+        while (current)
+        {
+            crntPart = current->val;
+            if (crntPart->size > difference)
+            {
+                difference = crntPart->size;
+            }
 
-        // get the smallest partition
+            current = current->next;
+        }
+
+        // get the difference
+        int bestIndx = -1;
+        current = ram->partitions->head;
+        for (int i = 0; i < ram->partitions->length; i++)
+        {
+            crntPart = current->val;
+            if (!crntPart->occupied)
+            {
+                if (crntPart->size - process->size < difference)
+                {
+                    difference = crntPart->size - process->size;
+                    bestIndx = i;
+                }
+            }
+
+            current = current->next;
+        }
+
+        // load the process
+        if (bestIndx > -1) // something was found
+        {
+            current = ram->partitions->head;
+            while (current)
+            {
+                crntPart = current->val;
+                if (!bestIndx)
+                {
+                    // load
+                    pushArrayNode(crntPart->startAdr, process);
+                    crntPart->occupied = true;
+
+                    // create a new partition
+
+                    if (difference > 0)
+                    {
+                        crntPart->size = process->size;
+
+                        crntPart = initPartition(difference);
+                        addListNode1(ram->partitions, crntPart);
+                    }
+
+                    return 1;
+                }
+
+                bestIndx -= 1;
+                current = current->next;
+            }
+        }
 
         break;
     case 2: // worst fit
-        int difference = 0;
+        difference = 0;
         int worstIndx = -1;
 
         // get the difference
