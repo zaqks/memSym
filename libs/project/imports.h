@@ -29,4 +29,7 @@
 
 #include "vars/vars2.h"
 
+#include "SDL2/SDL_mixer.h"
+#include "vars/sounds.h"
+
 #include "loops.h"

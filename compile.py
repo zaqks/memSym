@@ -4,7 +4,7 @@ from os import system
 import time
 
 CURRENT = 0
-PACKAGES = ["sdl2", "SDL2_ttf", "SDL2_image"]
+PACKAGES = ["sdl2", "SDL2_ttf", "SDL2_image", "SDL2_mixer"]
 
 COMP_DIST = "bin/"
 RUN = True
