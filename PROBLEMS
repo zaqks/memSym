@@ -1,3 +1,8 @@
-libs/SDL/widgets/Text.h lin3 64:
+libs/dataStructs/lists.h line 92
+replace the int with void*
+repalce %d with %p
+
+
+libs/SDL/widgets/Text.h line 64:
 u need to free the old text (u have and invalid size problem)
 this will fix the small memory leak u're having (~+0.1MB\s)
