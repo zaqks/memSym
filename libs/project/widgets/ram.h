@@ -15,9 +15,10 @@ WidgetRam *initRamW()
 
     // main rect
     SDL_Rect *mainRect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-    mainRect->x = MAINPADDING * 2 + SCREEN_WIDTH / 10;
+    // mainRect->x = MAINPADDING * 2 + SCREEN_WIDTH / 10;
+    mainRect->x = iStackW->mainRect->x + iStackW->mainRect->w + MAINPADDING;
     mainRect->y = MAINPADDING;
-    mainRect->w = SCREEN_WIDTH - SCREEN_WIDTH / 10 - 3 * MAINPADDING;
+    mainRect->w = SCREEN_WIDTH - mainRect->x - MAINPADDING;
     mainRect->h = SCREEN_HEIGHT - MAINPADDING * 2;
     widget->mainRect = mainRect;
 
@@ -100,7 +101,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
 
     for (int i = 0; i < ram->partitions->length; i++)
     {
-        
+
         if (maxSize)
         {
             ratio = (float)((Partition *)(current->val))->size / maxSize;

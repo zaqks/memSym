@@ -1,3 +1,2 @@
-#define iQueueLength 10
-
 WidgetLegend *legendW;
+WidgetIStack *iStackW;

@@ -8,6 +8,7 @@ typedef struct
     int clocks;
     float exeTime; // in s
     int size;
+    int priority;
 
     SDL_Color color;
 } Process;
@@ -35,6 +36,9 @@ Process *initProcess()
 
     // set the size
     process->size = randomNum(1, 6) * sizeof(Process);
+
+    // set the priority
+    process->priority = randomNum(0, iStackLength);
 
     // set a color
     process->color.r = randomNum(0, 255);

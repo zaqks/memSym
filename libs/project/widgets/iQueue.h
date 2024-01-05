@@ -9,17 +9,18 @@ typedef struct
 } WidgetIQueue;
 
 // init
-WidgetIQueue *initWIQueue()
+WidgetIQueue *initWIQueue(int w, int h, int x, int y)
 {
     WidgetIQueue *iQueue = (WidgetIQueue *)malloc(sizeof(WidgetIQueue));
     iQueue->processesNum = 0;
 
     // create the body rect
     SDL_Rect *mainRect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-    mainRect->h = SCREEN_HEIGHT - MAINPADDING * 2;
-    mainRect->w = SCREEN_WIDTH / 10;
-    mainRect->x = MAINPADDING;
-    mainRect->y = MAINPADDING;
+    mainRect->x = x;
+    mainRect->y = y;
+    mainRect->w = w;
+    mainRect->h = h;
+
     iQueue->mainRect = mainRect;
 
     // create the processesRects
@@ -33,24 +34,12 @@ WidgetIQueue *initWIQueue()
     {
         processRect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
 
-        processRect->x = MAINPADDING;
-        processRect->y = (mainRect->h - pHeight + 2 * MAINPADDING) - (MAINPADDING + i * pHeight);
+        processRect->x = mainRect->x;
+        processRect->y = mainRect->y + mainRect->h - pHeight - i * pHeight;
         processRect->w = pWidth;
         processRect->h = pHeight;
 
         iQueue->processesRects[i] = processRect;
-
-        // create the processes
-        /*
-                if (i < iQueue->processesNum)
-                {
-                    current = (Process *)popQueueNode(queue);
-                    pushQueueNode(queue, current);
-
-                    processW = initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
-                    iQueue->processesW[i] = processW;
-                }
-        */
     }
 
     return iQueue;

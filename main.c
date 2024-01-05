@@ -9,17 +9,23 @@ int main(int argc, char *args[])
     renderer = window->renderer;
     MAINPADDING *= window->padding;
 
-    //structs inits
-    iQueue = initQueue();
+    // structs inits
+    iStack = initStack();
+    for (int i = 0; i < iStackLength; i++)
+    {
+        pushStackNode(iStack, initQueue());
+    }
+
     ramPartitions = initRam();
-    
-    //widgets inits
+
+    // widgets inits
     legendW = initLengendW(renderer);
     statusW = initStatusW(renderer);
-    iQueueW = initWIQueue();
+
+    iStackW = initWIStack();
     ramW = initRamW();
-    
-    eventLoop(window, eventFunc, loopFunc);
+
+    mainLoop(window, eventFunc, loopFunc);
 
     return 0;
 }

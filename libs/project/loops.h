@@ -30,7 +30,11 @@ void eventFunc(SDL_Event e)
         }
     }
 }
-Process *processLoad;
+int currentNodeIndx;
+Stack *tmpStack;
+Queue *currentQueue;
+
+Process *currentProcess;
 
 int counter = CLK / REFRESHRATE;
 
@@ -42,44 +46,86 @@ void loopFunc(Window *window)
         // add processes to iQueue
         if (runQueue)
         {
-
-            if (iQueue->length < iQueueLength)
+            tmpStack = initStack();
+            currentNodeIndx = 0;
+            while (iStack->length)
             {
-                pushProcessQueue(iQueue, initProcess());
+                currentQueue = popStackNode(iStack);
+                pushStackNode(tmpStack, currentQueue);
+
+                // get an empty queue
+                if (currentQueue->length < iQueueLength)
+                {
+                    currentProcess = initProcess();
+                    currentProcess->priority = currentNodeIndx;
+                    pushQueueNode(currentQueue, currentProcess);
+
+                    break;
+                }
+                currentNodeIndx += 1;
             }
+
+            // refiil everything
+            while (tmpStack->length)
+            {
+                pushStackNode(iStack, popStackNode(tmpStack));
+            }
+
+            free(tmpStack);
         }
 
         // processor
+
         if (runProcessor)
         {
-            tickRam(ramPartitions);   
+            tickRam(ramPartitions);
 
-            if (iQueue->length > 0)
+            tmpStack = initStack();
+            while (iStack->length)
             {
+                currentQueue = popStackNode(iStack);
+                pushStackNode(tmpStack, currentQueue);
 
-                processLoad = (Process *)popQueueNode(iQueue);
-                if (!loadProcess(ramPartitions, processLoad, loadingStrategy))
+                if (currentQueue->length)
                 {
-                    pushQueueNode(iQueue, processLoad);
+                    currentProcess = (Process *)popQueueNode(currentQueue);
+                    if (!loadProcess(ramPartitions, currentProcess, loadingStrategy))
+                    {
+                        pushQueueNode(currentQueue, currentProcess);
+                    }
+
+                    if (priority)
+                    {
+                        break;
+                    }
                 }
             }
+            // refill everything
+            while (tmpStack->length)
+            {
+                pushStackNode(iStack, popStackNode(tmpStack));
+            }
+
+            free(tmpStack);
 
             // merge after the new process takes an empty partition
-            
+
             mergePartitions(ramPartitions);
-            
         }
 
         // print the ram
-        printRam(ramPartitions);
+        // printRam(ramPartitions);
 
         // refresh
         SDL_SetRenderDrawColor(window->renderer, BGCLR.r, BGCLR.g, BGCLR.b, BGCLR.a);
         SDL_RenderClear(window->renderer);
         //
 
-        updateWIQueue(renderer, iQueueW, iQueue);
-        drawWIQueue(renderer, iQueueW);
+        // updateWIQueue(renderer, iQueueW, iQueue);
+        // drawWIQueue(renderer, iQueueW);
+
+        updateWIStack(renderer, iStackW, iStack);
+        drawWIStack(renderer, iStackW);
 
         updateRawW(renderer, ramW, ramPartitions);
         drawRawW(renderer, ramW);

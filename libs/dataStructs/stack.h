@@ -1,4 +1,4 @@
-#include "lists.h"
+
 
 typedef ListNode StackNode;
 typedef List Stack;
@@ -13,12 +13,12 @@ void pushStackNode(Stack *stk, void *val)
     addListNode2(stk, val);
 }
 
-int popStackNode(Stack *stk)
+void *popStackNode(Stack *stk)
 {
-    int *rslt = (int *)(stk->head->val);
+    void *rslt = (void *)(stk->head->val);
     removeListNode(stk, 0);
 
-    return *rslt;
+    return rslt;
 }
 
 void printStack(Stack *stk)
@@ -26,23 +26,21 @@ void printStack(Stack *stk)
     printf("__\n");
     //
     Stack *tmp = initStack();
-    int *val;
+    void *val;
     int len = stk->length;
 
     while (len > 0)
     {
-        val = (int *)malloc(sizeof(int));
-        *val = popStackNode(stk);
+        val = popStackNode(stk);
         pushStackNode(tmp, val);
-        printf("%d\n__\n", *val);
+        printf("%p\n__\n", val);
         len--;
     }
     // refill
     len = tmp->length;
     while (len > 0)
     {
-        val = (int *)malloc(sizeof(int));
-        *val = popStackNode(tmp);
+        val = popStackNode(tmp);
         pushStackNode(stk, val);
 
         len--;
