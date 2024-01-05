@@ -26,6 +26,7 @@ if name == "":
 name = f"tst{name}"
 
 name = "main"
+name = "result"
 
 print(f"compiling and running {name}.c")
 #
