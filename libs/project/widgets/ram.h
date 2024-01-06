@@ -48,7 +48,7 @@ void drawRawW(SDL_Renderer *renderer, WidgetRam *widget)
 
     // partitions
     ListNode *current = widget->partitionsW->head;
-    for (int i = 0; i < widget->partitionsW->length; i++)
+    for (int i = 0; i < getListLength(widget->partitionsW); i++)
     {
         drawPartitionW(renderer, current->val);
         current = current->next;
@@ -62,7 +62,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     // delete partitionsW
     ListNode *currentW = widget->partitionsW->head;
 
-    while (widget->partitionsW->length)
+    while (getListLength(widget->partitionsW))
     {
         erasePartitionW(currentW->val);
         currentW = currentW->next;
@@ -73,7 +73,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     int maxSize = 0;
     ListNode *current = ram->partitions->head;
 
-    for (int i = 0; i < ram->partitions->length; i++)
+    for (int i = 0; i < getListLength(ram->partitions); i++)
     {
         if (maxSize < ((Partition *)(current->val))->size)
         {
@@ -84,14 +84,14 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     }
 
     // calc dims
-    int pW = (widget->grpRect->w - (ram->partitions->length + 1) * MAINPADDING) / ram->partitions->length;
+    int pW = (widget->grpRect->w - (getListLength(ram->partitions) + 1) * MAINPADDING) / getListLength(ram->partitions);
     if (pW > SCREEN_WIDTH / 10)
     {
         pW = SCREEN_WIDTH / 10;
     }
     int pH = widget->grpRect->h - MAINPADDING * 2;
 
-    int x = widget->grpRect->x + (widget->grpRect->w - (pW + MAINPADDING) * ram->partitions->length + MAINPADDING) / 2;
+    int x = widget->grpRect->x + (widget->grpRect->w - (pW + MAINPADDING) * getListLength(ram->partitions) + MAINPADDING) / 2;
     int y = widget->grpRect->y + MAINPADDING;
 
     // create the partitions
@@ -99,7 +99,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     WidgetPartition *partitionW;
     float ratio;
 
-    for (int i = 0; i < ram->partitions->length; i++)
+    for (int i = 0; i < getListLength(ram->partitions); i++)
     {
 
         if (maxSize)

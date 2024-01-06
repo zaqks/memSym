@@ -132,17 +132,44 @@ typedef struct listNode
 
 typedef struct
 {
-    int length;
     ListNode *head;
-    ListNode *queue;
 } List;
 
 List *initList()
 {
     List *lst = (List *)malloc(sizeof(List));
     lst->head = NULL;
-    lst->length = 0;
 }
+
+int getListLength(List *lst)
+{
+    int length = 0;
+    ListNode *current = lst->head;
+    while (current)
+    {
+        length++;
+        current = current->next;
+    }
+
+    return length;
+}
+
+ListNode *getListQueue(List *lst)
+{
+    ListNode *current = lst->head;
+    while (current)
+    {
+        if (current->next)
+        {
+            current = current->next;
+        }
+        else
+        {
+            return current;
+        }
+    }
+}
+
 // queue mode
 void addListNode1(List *lst, void *val)
 {
@@ -150,16 +177,16 @@ void addListNode1(List *lst, void *val)
     newElem->val = val;
     newElem->next = NULL;
 
-    if (lst->length == 0)
+    if (!lst->head)
     {
         lst->head = newElem;
     }
     else
     {
-        lst->queue->next = newElem;
+        // find the last one
+        ListNode *current = lst->head;
+        getListQueue(lst)->next = newElem;
     }
-    lst->queue = newElem;
-    lst->length += 1;
 }
 // stack mode
 void addListNode2(List *lst, void *val)
@@ -169,58 +196,51 @@ void addListNode2(List *lst, void *val)
     newElem->next = lst->head;
 
     lst->head = newElem;
-    if (lst->length == 0)
-    {
-        lst->queue = newElem;
-    }
-
-    lst->length += 1;
 }
 
-void removeListNode(List *lst, int indx)
+int removeListNode(List *lst, int indx)
 {
-    ListNode *before = NULL;
-    ListNode *current = lst->head;
-    for (int i = 0; i < indx; i++)
+    if (indx < getListLength(lst))
     {
-        before = current;
-        current = current->next;
-    }
-    //
-    // i = 0 whdha
-    if (indx == 0)
-    {
-        lst->head = current->next;
-    }
-    // i = len - 1 whda
-
-    //
-    if (before != NULL)
-    {
-        before->next = current->next;
-        if (indx == lst->length - 1)
+        ListNode *before = NULL;
+        ListNode *current = lst->head;
+        for (int i = 0; i < indx; i++)
         {
-            lst->queue = before;
+            before = current;
+            current = current->next;
         }
-    }
-    free(current);
+        //
+        // i = 0 whdha
+        if (!indx)
+        {
+            lst->head = current->next;
+        }
+        // i = len - 1 whda
 
-    lst->length -= 1;
+        //
+        if (before)
+        {
+            before->next = current->next;
+        }
+        free(current);
+        return 1;
+    }
+    printf("invalid indx\n");
+    return 0;
 }
 
 void printList(List *lst)
 {
     printf("[");
     ListNode *current = lst->head;
-    for (int i = 0; i < lst->length; i++)
+    while (current)
     {
-        int *val = (int *)current->val;
-        printf("%d ", *val);
+        void *val = (void *)current->val;
+        printf("%p ", val);
         current = current->next;
     }
     printf("]");
 }
-
 
 
 
@@ -245,6 +265,16 @@ void *popQueueNode(Queue *lst)
     return rslt;
 }
 
+int queueLength(Queue *queue)
+{
+    return getListLength(queue);
+}
+
+int emptyQueue(Queue *queue)
+{
+    return !getListLength(queue);
+}
+
 void printQueue(Queue *queue)
 {
     char *seprator = "______________";
@@ -252,18 +282,13 @@ void printQueue(Queue *queue)
     //
 
     void *val;
-    int len = queue->length;
-
-    while (len > 0)
+    for (int i = 0; i < queueLength(queue); i++)
     {
         val = popQueueNode(queue);
         pushQueueNode(queue, val);
         printf("%p\n%s\n", val, seprator);
-        len--;
     }
 }
-
-
 
 
 
@@ -273,6 +298,16 @@ typedef List Stack;
 Stack *initStack()
 {
     return (Stack *)initList();
+}
+
+int stackLength(Stack *stk)
+{
+    return getListLength(stk);
+}
+
+int emptyStack(Stack *stk)
+{
+    return !getListLength(stk);
 }
 
 void pushStackNode(Stack *stk, void *val)
@@ -294,29 +329,23 @@ void printStack(Stack *stk)
     //
     Stack *tmp = initStack();
     void *val;
-    int len = stk->length;
 
-    while (len > 0)
+    while (!emptyStack(stk))
     {
         val = popStackNode(stk);
         pushStackNode(tmp, val);
         printf("%p\n__\n", val);
-        len--;
     }
     // refill
-    len = tmp->length;
-    while (len > 0)
+    while (!emptyStack(tmp))
     {
-        val = popStackNode(tmp);
-        pushStackNode(stk, val);
-
-        len--;
+        pushStackNode(stk, popStackNode(tmp));
     }
 
     free(tmp);
 }
 
-const int CLK = 500; // ms
+const int CLK = 250; // ms
 #define iStackLength 3
 
 #define iQueueLength 10
@@ -593,7 +622,7 @@ int loadProcess(Ram *ram, Process *process, int strategy)
         // get the difference
         int bestIndx = -1;
         current = ram->partitions->head;
-        for (int i = 0; i < ram->partitions->length; i++)
+        for (int i = 0; i < getListLength(ram->partitions); i++)
         {
             crntPart = current->val;
             if (!crntPart->occupied)
@@ -646,7 +675,7 @@ int loadProcess(Ram *ram, Process *process, int strategy)
 
         // get the difference
         current = ram->partitions->head;
-        for (int i = 0; i < ram->partitions->length; i++)
+        for (int i = 0; i < getListLength(ram->partitions); i++)
         {
             crntPart = current->val;
             if (!crntPart->occupied)
@@ -781,7 +810,7 @@ int mergePartitions(Ram *ram) // returns  merged
     if (freeNum > 1)
     {
         // get the one to free
-        for (int i = 0; i < partitions->length; i++)
+        for (int i = 0; i < getListLength(ram->partitions); i++)
         {
 
             currentPartition = (Partition *)current->val;
@@ -797,7 +826,7 @@ int mergePartitions(Ram *ram) // returns  merged
 
         // merge
         current = partitions->head;
-        for (int i = 0; i < partitions->length; i++)
+        for (int i = 0; i < getListLength(ram->partitions); i++)
         {
 
             currentPartition = (Partition *)current->val;
@@ -839,6 +868,7 @@ void printRam(Ram *ram)
     printf("_______________________\n\n\n");
 }
 
+ 
 #include <strings.h>
 
 typedef struct
@@ -1014,10 +1044,12 @@ typedef struct
     SDL_Color color;
     SDL_Rect *mainRect;
     Text *szTxt;
+    Text *clkTxt;
+    Text *priorityTxt;
 
     int id;
     Text *idTxt;
-    Text *clkTxt;
+
 } WidgetProcess;
 
 #define txtPadding 5
@@ -1073,6 +1105,14 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     clkText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
     widget->clkTxt = clkText;
 
+    // priotrity text
+    char *prVal = (char *)malloc(2);
+    sprintf(prVal, "%d", process->priority);
+
+    Text *prText = createText(renderer, processFont, NULL, 0, prVal, widget->color, x, idText->rect->y);
+    prText->rect->x += mainRect->w - prText->rect->w - txtPadding;
+    widget->priorityTxt = prText;
+
     return widget;
 }
 
@@ -1089,6 +1129,7 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
     drawText(renderer, process->idTxt);
     drawText(renderer, process->szTxt);
     drawText(renderer, process->clkTxt);
+    drawText(renderer, process->priorityTxt);
 }
 
 void eraseProcessW(WidgetProcess *process)
@@ -1097,6 +1138,7 @@ void eraseProcessW(WidgetProcess *process)
     eraseText(process->idTxt);
     eraseText(process->szTxt);
     eraseText(process->clkTxt);
+    eraseText(process->priorityTxt);
     free(process);
 }
 typedef struct
@@ -1180,7 +1222,7 @@ void updateWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget, Queue *queue)
     // redraw
     SDL_Rect *processRect; // border
     Process *current;
-    for (int i = 0; i < queue->length; i++)
+    for (int i = 0; i < queueLength(queue); i++)
     {
         processRect = widget->processesRects[i]; // border
         current = (Process *)popQueueNode(queue);
@@ -1188,7 +1230,7 @@ void updateWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget, Queue *queue)
         widget->processesW[i] =
             initProcessW(renderer, current, processRect->w, processRect->h, processRect->x, processRect->y);
     }
-    widget->processesNum = queue->length;
+    widget->processesNum = queueLength(queue);
 }
 
 
@@ -1246,7 +1288,7 @@ void updateWIStack(SDL_Renderer *renderer, WidgetIStack *widget, Stack *stack)
     //
     Queue *currentQueue;
     int currentNodeIndx = 0;
-    while (stack->length)
+    while (stackLength(stack))
     {
         currentQueue = popStackNode(stack);
         pushStackNode(tmpStack, currentQueue);
@@ -1257,7 +1299,7 @@ void updateWIStack(SDL_Renderer *renderer, WidgetIStack *widget, Stack *stack)
     }
 
     // refill
-    while (tmpStack->length)
+    while (stackLength(tmpStack))
     {
         pushStackNode(stack, popStackNode(tmpStack));
     }
@@ -1424,7 +1466,7 @@ void drawStatusW(SDL_Renderer *renderer, WidgetStatus *widget)
     }
 }
 
-const int partnPdng = 10;
+const int partnPdng = 8;
 
 typedef struct
 {
@@ -1491,7 +1533,7 @@ WidgetPartition *initPartitionW(SDL_Renderer *renderer, Partition *partition, in
 void drawPartitionW(SDL_Renderer *renderer, WidgetPartition *widget)
 {
     SDL_Color partitonCLR;
-    if (widget->processW->length)
+    if (getListLength(widget->processW))
     {
         partitonCLR = REDCLR;
     }
@@ -1584,7 +1626,7 @@ void drawRawW(SDL_Renderer *renderer, WidgetRam *widget)
 
     // partitions
     ListNode *current = widget->partitionsW->head;
-    for (int i = 0; i < widget->partitionsW->length; i++)
+    for (int i = 0; i < getListLength(widget->partitionsW); i++)
     {
         drawPartitionW(renderer, current->val);
         current = current->next;
@@ -1598,7 +1640,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     // delete partitionsW
     ListNode *currentW = widget->partitionsW->head;
 
-    while (widget->partitionsW->length)
+    while (getListLength(widget->partitionsW))
     {
         erasePartitionW(currentW->val);
         currentW = currentW->next;
@@ -1609,7 +1651,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     int maxSize = 0;
     ListNode *current = ram->partitions->head;
 
-    for (int i = 0; i < ram->partitions->length; i++)
+    for (int i = 0; i < getListLength(ram->partitions); i++)
     {
         if (maxSize < ((Partition *)(current->val))->size)
         {
@@ -1620,14 +1662,14 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     }
 
     // calc dims
-    int pW = (widget->grpRect->w - (ram->partitions->length + 1) * MAINPADDING) / ram->partitions->length;
+    int pW = (widget->grpRect->w - (getListLength(ram->partitions) + 1) * MAINPADDING) / getListLength(ram->partitions);
     if (pW > SCREEN_WIDTH / 10)
     {
         pW = SCREEN_WIDTH / 10;
     }
     int pH = widget->grpRect->h - MAINPADDING * 2;
 
-    int x = widget->grpRect->x + (widget->grpRect->w - (pW + MAINPADDING) * ram->partitions->length + MAINPADDING) / 2;
+    int x = widget->grpRect->x + (widget->grpRect->w - (pW + MAINPADDING) * getListLength(ram->partitions) + MAINPADDING) / 2;
     int y = widget->grpRect->y + MAINPADDING;
 
     // create the partitions
@@ -1635,7 +1677,7 @@ void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
     WidgetPartition *partitionW;
     float ratio;
 
-    for (int i = 0; i < ram->partitions->length; i++)
+    for (int i = 0; i < getListLength(ram->partitions); i++)
     {
 
         if (maxSize)
@@ -1676,18 +1718,18 @@ bool sound = true;
 #define soundsNum 4
 
 
-char *soundsPaths[soundsNum] = {"assets/sounds/start1.mp3", "assets/sounds/stop1.mp3", "assets/sounds/start2.mp3", "assets/sounds/stop2.mp3"};
-Mix_Music *sounds[soundsNum];
+char *soundsPaths[soundsNum] = {"assets/sounds/start1.wav", "assets/sounds/stop1.wav", "assets/sounds/start2.wav", "assets/sounds/stop2.wav"};
+Mix_Chunk *sounds[soundsNum];
 
 void initSounds()
 {
     SDL_Init(SDL_INIT_AUDIO);
     Mix_Init(MIX_INIT_MP3);
-    Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 640); // open the device
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048); // open the device
 
     for (int i = 0; i < soundsNum; i++)
     {
-        sounds[i] = Mix_LoadMUS(soundsPaths[i]);
+        sounds[i] = Mix_LoadWAV(soundsPaths[i]);
     }
 }
 
@@ -1695,7 +1737,8 @@ void playSound(int soundId, bool canPlay)
 {
     if (canPlay)
     {
-        Mix_PlayMusic(sounds[soundId], 0);
+        Mix_PlayChannel(-1, sounds[soundId], 0);
+        //Mix_PlayMusic(sounds[soundId], 0);
     }
 }
 void eventFunc(SDL_Event e)
@@ -1753,13 +1796,13 @@ void loopFunc(Window *window)
         {
             tmpStack = initStack();
             currentNodeIndx = 0;
-            while (iStack->length)
+            while (stackLength(iStack))
             {
                 currentQueue = popStackNode(iStack);
                 pushStackNode(tmpStack, currentQueue);
 
                 // get an empty queue
-                if (currentQueue->length < iQueueLength)
+                if (queueLength(currentQueue) < iQueueLength)
                 {
                     currentProcess = initProcess();
                     currentProcess->priority = currentNodeIndx;
@@ -1771,7 +1814,7 @@ void loopFunc(Window *window)
             }
 
             // refiil everything
-            while (tmpStack->length)
+            while (!emptyStack(tmpStack))
             {
                 pushStackNode(iStack, popStackNode(tmpStack));
             }
@@ -1793,12 +1836,12 @@ void loopFunc(Window *window)
             }
 
             tmpStack = initStack();
-            while (iStack->length)
+            while (!emptyStack(iStack))
             {
                 currentQueue = popStackNode(iStack);
                 pushStackNode(tmpStack, currentQueue);
 
-                if (currentQueue->length)
+                if (queueLength(currentQueue))
                 {
                     currentProcess = (Process *)popQueueNode(currentQueue);
                     // load process
@@ -1818,7 +1861,7 @@ void loopFunc(Window *window)
                 }
             }
             // refill everything
-            while (tmpStack->length)
+            while (!emptyStack(tmpStack))
             {
                 pushStackNode(iStack, popStackNode(tmpStack));
             }
@@ -1829,7 +1872,7 @@ void loopFunc(Window *window)
 
             if (mergePartitions(ramPartitions)) // if merged
             {
-                playSound(0, sound); // if this is a normal tick
+                playSound(0, sound);
             };
         }
 

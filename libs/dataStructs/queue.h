@@ -21,6 +21,16 @@ void *popQueueNode(Queue *lst)
     return rslt;
 }
 
+int queueLength(Queue *queue)
+{
+    return getListLength(queue);
+}
+
+int emptyQueue(Queue *queue)
+{
+    return !getListLength(queue);
+}
+
 void printQueue(Queue *queue)
 {
     char *seprator = "______________";
@@ -28,15 +38,10 @@ void printQueue(Queue *queue)
     //
 
     void *val;
-    int len = queue->length;
-
-    while (len > 0)
+    for (int i = 0; i < queueLength(queue); i++)
     {
         val = popQueueNode(queue);
         pushQueueNode(queue, val);
         printf("%p\n%s\n", val, seprator);
-        len--;
     }
 }
-
-

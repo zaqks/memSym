@@ -9,17 +9,44 @@ typedef struct listNode
 
 typedef struct
 {
-    int length;
     ListNode *head;
-    ListNode *queue;
 } List;
 
 List *initList()
 {
     List *lst = (List *)malloc(sizeof(List));
     lst->head = NULL;
-    lst->length = 0;
 }
+
+int getListLength(List *lst)
+{
+    int length = 0;
+    ListNode *current = lst->head;
+    while (current)
+    {
+        length++;
+        current = current->next;
+    }
+
+    return length;
+}
+
+ListNode *getListQueue(List *lst)
+{
+    ListNode *current = lst->head;
+    while (current)
+    {
+        if (current->next)
+        {
+            current = current->next;
+        }
+        else
+        {
+            return current;
+        }
+    }
+}
+
 // queue mode
 void addListNode1(List *lst, void *val)
 {
@@ -27,16 +54,16 @@ void addListNode1(List *lst, void *val)
     newElem->val = val;
     newElem->next = NULL;
 
-    if (lst->length == 0)
+    if (!lst->head)
     {
         lst->head = newElem;
     }
     else
     {
-        lst->queue->next = newElem;
+        // find the last one
+        ListNode *current = lst->head;
+        getListQueue(lst)->next = newElem;
     }
-    lst->queue = newElem;
-    lst->length += 1;
 }
 // stack mode
 void addListNode2(List *lst, void *val)
@@ -46,55 +73,48 @@ void addListNode2(List *lst, void *val)
     newElem->next = lst->head;
 
     lst->head = newElem;
-    if (lst->length == 0)
-    {
-        lst->queue = newElem;
-    }
-
-    lst->length += 1;
 }
 
-void removeListNode(List *lst, int indx)
+int removeListNode(List *lst, int indx)
 {
-    ListNode *before = NULL;
-    ListNode *current = lst->head;
-    for (int i = 0; i < indx; i++)
+    if (indx < getListLength(lst))
     {
-        before = current;
-        current = current->next;
-    }
-    //
-    // i = 0 whdha
-    if (indx == 0)
-    {
-        lst->head = current->next;
-    }
-    // i = len - 1 whda
-
-    //
-    if (before != NULL)
-    {
-        before->next = current->next;
-        if (indx == lst->length - 1)
+        ListNode *before = NULL;
+        ListNode *current = lst->head;
+        for (int i = 0; i < indx; i++)
         {
-            lst->queue = before;
+            before = current;
+            current = current->next;
         }
-    }
-    free(current);
+        //
+        // i = 0 whdha
+        if (!indx)
+        {
+            lst->head = current->next;
+        }
+        // i = len - 1 whda
 
-    lst->length -= 1;
+        //
+        if (before)
+        {
+            before->next = current->next;
+        }
+        free(current);
+        return 1;
+    }
+    printf("invalid indx\n");
+    return 0;
 }
 
 void printList(List *lst)
 {
     printf("[");
     ListNode *current = lst->head;
-    for (int i = 0; i < lst->length; i++)
+    while (current)
     {
-        int *val = (int *)current->val;
-        printf("%d ", *val);
+        void *val = (void *)current->val;
+        printf("%p ", val);
         current = current->next;
     }
     printf("]");
 }
-

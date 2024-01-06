@@ -1,3 +1,3 @@
-const int CLK = 500; // ms
+const int CLK = 250; // ms
 #define iStackLength 3
 #define iQueueLength 10

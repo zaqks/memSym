@@ -53,7 +53,7 @@ void updateWIStack(SDL_Renderer *renderer, WidgetIStack *widget, Stack *stack)
     //
     Queue *currentQueue;
     int currentNodeIndx = 0;
-    while (stack->length)
+    while (stackLength(stack))
     {
         currentQueue = popStackNode(stack);
         pushStackNode(tmpStack, currentQueue);
@@ -64,7 +64,7 @@ void updateWIStack(SDL_Renderer *renderer, WidgetIStack *widget, Stack *stack)
     }
 
     // refill
-    while (tmpStack->length)
+    while (stackLength(tmpStack))
     {
         pushStackNode(stack, popStackNode(tmpStack));
     }

@@ -53,13 +53,13 @@ void loopFunc(Window *window)
         {
             tmpStack = initStack();
             currentNodeIndx = 0;
-            while (iStack->length)
+            while (stackLength(iStack))
             {
                 currentQueue = popStackNode(iStack);
                 pushStackNode(tmpStack, currentQueue);
 
                 // get an empty queue
-                if (currentQueue->length < iQueueLength)
+                if (queueLength(currentQueue) < iQueueLength)
                 {
                     currentProcess = initProcess();
                     currentProcess->priority = currentNodeIndx;
@@ -71,7 +71,7 @@ void loopFunc(Window *window)
             }
 
             // refiil everything
-            while (tmpStack->length)
+            while (!emptyStack(tmpStack))
             {
                 pushStackNode(iStack, popStackNode(tmpStack));
             }
@@ -93,12 +93,12 @@ void loopFunc(Window *window)
             }
 
             tmpStack = initStack();
-            while (iStack->length)
+            while (!emptyStack(iStack))
             {
                 currentQueue = popStackNode(iStack);
                 pushStackNode(tmpStack, currentQueue);
 
-                if (currentQueue->length)
+                if (queueLength(currentQueue))
                 {
                     currentProcess = (Process *)popQueueNode(currentQueue);
                     // load process
@@ -118,7 +118,7 @@ void loopFunc(Window *window)
                 }
             }
             // refill everything
-            while (tmpStack->length)
+            while (!emptyStack(tmpStack))
             {
                 pushStackNode(iStack, popStackNode(tmpStack));
             }
