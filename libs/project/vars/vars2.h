@@ -17,4 +17,4 @@ bool runQueue = false;
 int loadingStrategy = 0; /*first f best f worst f*/
 bool priority = false;
 bool sound = true;
-int printIndx = 1;
+int printIndx = 0;

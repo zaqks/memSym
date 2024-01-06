@@ -26,7 +26,11 @@ void eventFunc(SDL_Event e)
             priority = !priority;
             break;
         case SDLK_u:
-            printIndx = !printIndx;
+            printIndx += 1;
+            if (printIndx > 2)
+            {
+                printIndx = 0;
+            }
             break;
         case SDLK_i: // i
             sound = !sound;
@@ -135,12 +139,12 @@ void loopFunc(Window *window)
             };
         }
 
-        if (printIndx)
+        if (printIndx == 1)
         {
             // print iStack
             printIStack(iStack);
         }
-        else
+        if (printIndx == 2)
         {
             // print the ram
             printRam(ramPartitions);

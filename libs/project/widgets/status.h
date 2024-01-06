@@ -128,7 +128,7 @@ void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor,
     }
 
     // print mode
-    if (printIndx)
+    if (printIndx )
     {
         changeTextColor(widget->vals[StatusNum - 2], GREENCLR);
         updateText(renderer, widget->vals[StatusNum - 2], "<on>");

@@ -2,23 +2,25 @@ const int ramSize = 1024; // 1KB
 
 typedef struct
 {
-    int freeSpace; // for partitions
+    // int freeSpace; // for partitions
     List *partitions;
 } Ram;
 
 Ram *initRam()
 {
     Ram *ram = (Ram *)malloc(sizeof(Ram));
-    ram->freeSpace = ramSize;
+    //ram->freeSpace = ramSize;
     ram->partitions = initList();
 
     // create the partitions
     Partition *partition;
-    for (int i = 0; i < 4; i++)
+    int partitionsNum = randomNum(3, 7);
+    int freeSpace = ramSize;
+    for (int i = 0; i < partitionsNum; i++)
     {
-        partition = initPartition(ramSize / 4);
+        partition = initPartition(ramSize / partitionsNum);
         addListNode1(ram->partitions, partition);
-        ram->freeSpace -= ramSize / 4;
+        freeSpace -= ramSize / partitionsNum;
     }
 
     return ram;
@@ -352,7 +354,7 @@ void printIStack(Stack *stk)
 
         current = popStackNode(stk);
         pushStackNode(tmpStk, current);
-        
+
         printIQueue(current);
 
         printf("----------------------\n");
