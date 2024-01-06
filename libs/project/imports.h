@@ -28,5 +28,6 @@
 #include "vars/vars2.h"
 
 #include "sounds.h"
+#include "userdata.h"
 
 #include "loops.h"
