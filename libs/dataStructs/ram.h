@@ -326,4 +326,43 @@ void printRam(Ram *ram)
     printf("_______________________\n\n\n");
 }
 
- 
+void printIQueue(Queue *queue)
+{
+    Process *current;
+    for (int i = 0; i < queueLength(queue); i++)
+    {
+        current = popQueueNode(queue);
+        pushQueueNode(queue, current);
+
+        printProcess(current);
+    }
+}
+
+void printIStack(Stack *stk)
+{
+
+    printf("________iSTACK_________\n\n");
+
+    Stack *tmpStk = initStack();
+
+    Queue *current;
+    for (int i = 0; !emptyStack(stk); i++)
+    {
+        printf("--queue%d--------------\n", i);
+
+        current = popStackNode(stk);
+        pushStackNode(tmpStk, current);
+        
+        printIQueue(current);
+
+        printf("----------------------\n");
+    }
+
+    while (!emptyStack(tmpStk))
+    {
+        pushStackNode(stk, popStackNode(tmpStk));
+    }
+
+    free(tmpStk);
+    printf("_______________________\n\n\n");
+}

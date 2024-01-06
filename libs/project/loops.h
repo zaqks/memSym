@@ -7,26 +7,28 @@ void eventFunc(SDL_Event e)
         switch (e.key.keysym.sym)
         {
 
-        case 113: // q
+        case SDLK_q: // q
             runProcessor = !runProcessor;
             break;
-        case 119: // w
+        case SDLK_w: // w
             runQueue = !runQueue;
             break;
-        case 101: // e first
+        case SDLK_e: // e first
             loadingStrategy = 0;
             break;
-        case 114: // r best
+        case SDLK_r: // r best
             loadingStrategy = 1;
             break;
-        case 116: // t worst
+        case SDLK_t: // t worst
             loadingStrategy = 2;
             break;
-        case 121: // y
+        case SDLK_y: // y
             priority = !priority;
             break;
-
-        case 117: // u
+        case SDLK_u:
+            printIndx = !printIndx;
+            break;
+        case SDLK_i: // i
             sound = !sound;
             break;
 
@@ -62,7 +64,7 @@ void loopFunc(Window *window)
                 if (queueLength(currentQueue) < iQueueLength)
                 {
                     currentProcess = initProcess();
-                    currentProcess->priority = currentNodeIndx;
+                    currentProcess->priority = iStackLength - currentNodeIndx; // invert
                     pushQueueNode(currentQueue, currentProcess);
 
                     break;
@@ -133,8 +135,16 @@ void loopFunc(Window *window)
             };
         }
 
-        // print the ram
-        // printRam(ramPartitions);
+        if (printIndx)
+        {
+            // print iStack
+            printIStack(iStack);
+        }
+        else
+        {
+            // print the ram
+            printRam(ramPartitions);
+        }
 
         // refresh
         SDL_SetRenderDrawColor(window->renderer, BGCLR.r, BGCLR.g, BGCLR.b, BGCLR.a);
@@ -150,7 +160,7 @@ void loopFunc(Window *window)
         updateRawW(renderer, ramW, ramPartitions);
         drawRawW(renderer, ramW);
 
-        updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority, sound);
+        updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority, sound, printIndx);
         drawStatusW(renderer, statusW);
 
         drawLegendW(renderer, legendW);

@@ -1,4 +1,4 @@
-#define StatusNum 7
+#define StatusNum 8
 char *statusVals[StatusNum] = {
     "processor ",
     "queue ",
@@ -6,6 +6,7 @@ char *statusVals[StatusNum] = {
     "best fit ",
     "worst fit ",
     "priority",
+    "print iStack",
     "sound",
 };
 
@@ -80,7 +81,7 @@ WidgetStatus *initStatusW(SDL_Renderer *renderer)
     return status;
 }
 
-void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor, bool queue, bool stategy, int priority, bool sound)
+void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor, bool queue, int strategy, int priority, bool sound, int printIndx)
 {
     // processor + queue
     int vals[2] = {processor, queue};
@@ -100,22 +101,34 @@ void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor,
     }
 
     // strategy
-    for (int i = 0; i < 3; i++)
+    for (int i = 2; i < 5; i++)
     {
-        if (i == stategy)
+        if (i - 2 == strategy)
         {
-            changeTextColor(widget->vals[i + 2], GREENCLR);
-            updateText(renderer, widget->vals[i + 2], "<on>");
+            changeTextColor(widget->vals[i], GREENCLR);
+            updateText(renderer, widget->vals[i], "<on>");
         }
         else
         {
-            changeTextColor(widget->vals[i + 2], REDCLR);
-            updateText(renderer, widget->vals[i + 2], "<off>");
+            changeTextColor(widget->vals[i], REDCLR);
+            updateText(renderer, widget->vals[i], "<off>");
         }
     }
 
     // priority
     if (priority)
+    {
+        changeTextColor(widget->vals[StatusNum - 3], GREENCLR);
+        updateText(renderer, widget->vals[StatusNum - 3], "<on>");
+    }
+    else
+    {
+        changeTextColor(widget->vals[StatusNum - 3], REDCLR);
+        updateText(renderer, widget->vals[StatusNum - 3], "<off>");
+    }
+
+    // print mode
+    if (printIndx)
     {
         changeTextColor(widget->vals[StatusNum - 2], GREENCLR);
         updateText(renderer, widget->vals[StatusNum - 2], "<on>");
@@ -125,7 +138,7 @@ void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor,
         changeTextColor(widget->vals[StatusNum - 2], REDCLR);
         updateText(renderer, widget->vals[StatusNum - 2], "<off>");
     }
-    
+
     // sound
     if (sound)
     {
