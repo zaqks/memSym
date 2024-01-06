@@ -27,6 +27,6 @@
 
 #include "vars/vars2.h"
 
-#include "vars/sounds.h"
+#include "sounds.h"
 
 #include "loops.h"
