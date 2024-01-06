@@ -1,9 +1,4 @@
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <assert.h>
-#include <SDL2/SDL.h>
 
 char **str_split(char *a_str, const char a_delim)
 {
@@ -58,9 +53,9 @@ int ram;
 int stacks;
 int queueL;
 
-int partsizes[] = {};
-int queueLens[] = {};
-Process *processes[] = {};
+List *partsizes;
+List *queueLens;
+List *processes;
 
 int getUserData()
 {
@@ -70,100 +65,120 @@ int getUserData()
     size_t len = 0;
     __ssize_t read;
 
-    file = fopen("data/userdata", "r");
+    file = fopen("../../data/userdata", "r");
     if (!file)
     {
-        return EXIT_FAILURE;
+        return 0;
     }
+
+    partsizes = initList();
+    queueLens = initList();
+    processes = initList();
+
+    char **tokens;
+
+    ListNode *current;
+    int priority = 0;
+    Process *process;
 
     for (int i = 0; (read = getline(&line, &len, file)) != -1; i++)
     {
-        // first 4 lines
-        switch (i)
+        // vars
+        if (i < 4)
         {
-        case 0: // clk
-            clk = atoi(line);
-            break;
-        case 1: // ram
-            ram = atoi(line);
-            break;
-        case 2: // stacks
-            stacks = atoi(line);
-            break;
-        case 3: // queue len
-            queueL = atoi(line);
-            break;
+            int val = atoi(line);
 
-        default:
-            // part sizes
-            if (i < 4 + stacks)
+            switch (i)
             {
-                partsizes[i - 4] = atoi(line);
+            case 0:
+                clk = val;
+                break;
+            case 1:
+                ram = val;
+                break;
+            case 2:
+                stacks = val;
+                break;
+            default:
+                queueL = val;
+                break;
             }
-            // queue sizes
-            if (i == 4 + stacks + 2)
-            {
-                char **tokens = str_split(line, ' '); // ' ' not " "
+        }
 
-                for (int i = 0; *(tokens + i); i++)
+        // partsSize
+        if (4 < i && i < 4 + stacks + 1)
+        {
+            int *val = (int *)malloc(sizeof(int));
+            *val = atoi(line);
+            addListNode1(partsizes, val);
+        }
+
+        // queuesLength
+
+        if (i == 4 + stacks + 1 + 1)
+        {
+            tokens = str_split(line, ' ');
+            if (tokens)
+            {
+
+                for (int j = 0; *(tokens + j); j++)
                 {
-                    queueLens[i] = atoi(*(tokens + i));
-                    free(*(tokens + i));
+                    int *val = (int *)malloc(sizeof(int));
+                    *val = atoi(*(tokens + j));
+                    addListNode1(queueLens, val);
                 }
                 free(tokens);
             }
+        }
 
-            // processes
-            if (i > 4 + stacks + 2 + 1)
+        // processes
+        if (4 + stacks + 1 + 1 + 1 < i)
+        {
+            if (i == 4 + stacks + 1 + 1 + 1 + 1)
             {
-                for (int j = 0; j < stacks; j++)
-                {
-                    if (queueLens[j])
-                    {
-                        Process *process = initProcess();
-                        process->priority = j;
-                        char **tokens = str_split(line, ' ');
-                        int val;
-                        for (int k = 0; *(tokens + k); k++)
-                        {
-                            val = atoi(*(tokens + k));
-                            switch (k)
-                            {
-                            case 0:
-                                process->size = val;
-                                break;
-                            case 1:
-                                process->clocks = val;
-                                break;
-                            case 2:
-                                process->color.r = val;
-                                break;
-                            case 3:
-                                process->color.g = val;
-                                break;
-                            case 4:
-                                process->color.b = val;
-                                break;
-                            case 5:
-                                process->color.a = val;
-                                break;
-                            default:
-                                break;
-                            }
+                current = queueLens->head;
+            }
 
-                            free(*(tokens + k));
+            if (!*((int *)current->val))
+            {
+                current = current->next;
+                priority++;
+                i++;
+            }
+            else
+            {
+                *((int *)current->val) -= 1;
+
+                tokens = str_split(line, ' ');
+                if (tokens)
+                {
+                    process = initProcess();
+                    process->priority = stacks - priority;
+                    for (int j = 0; *(tokens + j); j++)
+                    {
+                        switch (j)
+                        {
+                        case 0: // size
+                            break;
+                        case 1: // clk
+                            break;
+                        case 2: // r
+                            break;
+                        case 3: // g
+                            break;
+                        case 4: // b
+                            break;
+
+                        default: // a
+                            break;
                         }
 
-                        processes[i - (4 + stacks + 2 + 1 + 1)] = process;
-                        queueLens[j]--;
-
-                        free(tokens);
-
-                        break;
+                        printf("%d\n", atoi(*(tokens + j)));
                     }
+                    free(tokens);
+                    addListNode1(processes, process);
                 }
             }
-            break;
         }
     }
 
@@ -173,7 +188,46 @@ int getUserData()
         free(line);
     }
 
-    return EXIT_SUCCESS;
+    return 1;
 }
 
-int applyUserData() {}
+int checkUserData()
+{
+    // check initial vars
+    int vars[4] = {clk, ram, stacks, queueL};
+    for (int i = 0; i < 4; i++)
+    {
+        if (!vars[i])
+        {
+            return 0;
+        }
+    }
+
+    // check partsSize
+
+    int totalPartsSz = 0;
+    ListNode *current = partsizes->head;
+    int val;
+    while (current)
+    {
+        val = *(int *)(current->val);
+        if (!val)
+        {
+            return 0;
+        }
+        totalPartsSz += val;
+
+        current = current->next;
+    }
+
+    if (totalPartsSz != ram)
+    {
+        return 0;
+    }
+
+    // dont check the queueLens
+
+    return 1;
+}
+
+int setUserData() {}
