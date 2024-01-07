@@ -1,4 +1,4 @@
-const int ramSize = 1024; // 1KB
+int ramSize = 1024; // 1KB
 
 typedef struct
 {
@@ -9,7 +9,7 @@ typedef struct
 Ram *initRam()
 {
     Ram *ram = (Ram *)malloc(sizeof(Ram));
-    //ram->freeSpace = ramSize;
+    // ram->freeSpace = ramSize;
     ram->partitions = initList();
 
     // create the partitions

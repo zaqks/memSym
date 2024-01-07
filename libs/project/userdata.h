@@ -1,4 +1,5 @@
 #include <assert.h>
+const char *udPath = "data/userdata";
 
 char **str_split(char *a_str, const char a_delim)
 {
@@ -65,7 +66,7 @@ int getUserData()
     size_t len = 0;
     __ssize_t read;
 
-    file = fopen("../../data/userdata", "r");
+    file = fopen(udPath, "r");
     if (!file)
     {
         return 0;
@@ -76,7 +77,7 @@ int getUserData()
     processes = initList();
 
     char **tokens;
-
+    List *queueLens2 = initList();
     ListNode *current;
     int priority = 0;
     Process *process;
@@ -94,13 +95,13 @@ int getUserData()
                 clk = val;
                 break;
             case 1:
-                ram = val;
-                break;
-            case 2:
                 stacks = val;
                 break;
-            default:
+            case 2:
                 queueL = val;
+                break;
+            default:
+                ram = val;
                 break;
             }
         }
@@ -124,8 +125,12 @@ int getUserData()
                 for (int j = 0; *(tokens + j); j++)
                 {
                     int *val = (int *)malloc(sizeof(int));
+                    int *val2 = (int *)malloc(sizeof(int));
                     *val = atoi(*(tokens + j));
+                    *val2 = atoi(*(tokens + j));
+
                     addListNode1(queueLens, val);
+                    addListNode1(queueLens2, val2);
                 }
                 free(tokens);
             }
@@ -136,7 +141,7 @@ int getUserData()
         {
             if (i == 4 + stacks + 1 + 1 + 1 + 1)
             {
-                current = queueLens->head;
+                current = queueLens2->head;
             }
 
             if (!*((int *)current->val))
@@ -156,24 +161,32 @@ int getUserData()
                     process->priority = stacks - priority;
                     for (int j = 0; *(tokens + j); j++)
                     {
+                        int val = atoi(*(tokens + j));
                         switch (j)
                         {
                         case 0: // size
+                            process->size = val;
                             break;
                         case 1: // clk
+                            process->clocks = val;
+                            process->exeTime = val * clk;
+                            process->exeTime = (float)(process->exeTime) / 1000;
                             break;
                         case 2: // r
+                            process->color.r = val;
                             break;
                         case 3: // g
+                            process->color.g = val;
                             break;
+
                         case 4: // b
+                            process->color.b = val;
                             break;
 
                         default: // a
+                            process->color.a = val;
                             break;
                         }
-
-                        printf("%d\n", atoi(*(tokens + j)));
                     }
                     free(tokens);
                     addListNode1(processes, process);
@@ -194,10 +207,19 @@ int getUserData()
 int checkUserData()
 {
     // check initial vars
-    int vars[4] = {clk, ram, stacks, queueL};
+    int vars[4] = {clk, stacks, queueL, ram};
     for (int i = 0; i < 4; i++)
     {
         if (!vars[i])
+        {
+            return 0;
+        }
+    }
+
+    int comp[3] = {CLK, iStackLength, iQueueLength};
+    for (int i = 0; i < 3; i++)
+    {
+        if (vars[i] != comp[i])
         {
             return 0;
         }
@@ -225,9 +247,64 @@ int checkUserData()
         return 0;
     }
 
-    // dont check the queueLens
+    // check the queueLens
+    int processesNum = 0;
+    current = queueLens->head;
+    while (current)
+    {
+        if (*((int *)current->val) > queueL)
+        {
+            return 0;
+        }
+        processesNum += *((int *)current->val);
+        current = current->next;
+    }
+
+    // check the processes
+    current = processes->head;
+    Process *currentPrc;
+    int clrs[4];
+    while (current)
+    {
+        currentPrc = current->val;
+
+        // clock check
+        if (!currentPrc->clocks)
+        {
+            return 0;
+        }
+
+        // check priority
+        if (currentPrc->priority <= 0 || currentPrc->priority > stacks)
+        {
+            return 0;
+        }
+
+        // colors check
+        clrs[0] = currentPrc->color.r;
+        clrs[1] = currentPrc->color.g;
+        clrs[2] = currentPrc->color.b;
+        clrs[3] = currentPrc->color.a;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (!clrs[i])
+            {
+                return 0;
+            }
+        }
+
+        current = current->next;
+    }
 
     return 1;
 }
 
-int setUserData() {}
+int setUserData()
+{
+
+    // init ram
+    ramSize = ram;
+
+    // load processes
+}
