@@ -345,7 +345,8 @@ void printStack(Stack *stk)
     free(tmp);
 }
 
-const int CLK = 250; // ms
+#define CLK  250 // ms
+
 #define iStackLength 3
 
 #define iQueueLength 10
@@ -417,7 +418,7 @@ void killProcess(Process *process)
 
 void printProcess(Process *process)
 {
-    printf("# process%d (~%.1fs remaing)\n", process->id, process->exeTime);
+    printf("# process%d (~%.1fs remaing) lvl%d age:%s\n", process->id, process->exeTime, process->priority, process->arvTime);
 }
 typedef struct
 {
@@ -540,27 +541,29 @@ void printPartition(Partition *partition)
 
     printf("-----------------------\n\n");
 }
-const int ramSize = 1024; // 1KB
+int ramSize = 1024; // 1KB
 
 typedef struct
 {
-    int freeSpace; // for partitions
+    // int freeSpace; // for partitions
     List *partitions;
 } Ram;
 
 Ram *initRam()
 {
     Ram *ram = (Ram *)malloc(sizeof(Ram));
-    ram->freeSpace = ramSize;
+    // ram->freeSpace = ramSize;
     ram->partitions = initList();
 
     // create the partitions
     Partition *partition;
-    for (int i = 0; i < 4; i++)
+    int partitionsNum = randomNum(3, 7);
+    int freeSpace = ramSize;
+    for (int i = 0; i < partitionsNum; i++)
     {
-        partition = initPartition(ramSize / 4);
+        partition = initPartition(ramSize / partitionsNum);
         addListNode1(ram->partitions, partition);
-        ram->freeSpace -= ramSize / 4;
+        freeSpace -= ramSize / partitionsNum;
     }
 
     return ram;
@@ -868,7 +871,46 @@ void printRam(Ram *ram)
     printf("_______________________\n\n\n");
 }
 
- 
+void printIQueue(Queue *queue)
+{
+    Process *current;
+    for (int i = 0; i < queueLength(queue); i++)
+    {
+        current = popQueueNode(queue);
+        pushQueueNode(queue, current);
+
+        printProcess(current);
+    }
+}
+
+void printIStack(Stack *stk)
+{
+
+    printf("________iSTACK_________\n\n");
+
+    Stack *tmpStk = initStack();
+
+    Queue *current;
+    for (int i = 0; !emptyStack(stk); i++)
+    {
+        printf("--queue%d--------------\n", i);
+
+        current = popStackNode(stk);
+        pushStackNode(tmpStk, current);
+
+        printIQueue(current);
+
+        printf("----------------------\n");
+    }
+
+    while (!emptyStack(tmpStk))
+    {
+        pushStackNode(stk, popStackNode(tmpStk));
+    }
+
+    free(tmpStk);
+    printf("_______________________\n\n\n");
+}
 #include <strings.h>
 
 typedef struct
@@ -956,7 +998,7 @@ void changeTextColor(Text *widget, SDL_Color color)
 {
     widget->color = color;
 }
-#define LegendsNum 9
+#define LegendsNum 10
 
 char *legends[LegendsNum] = {"<q> toggle processor",
                              "<w> toggle queue",
@@ -964,7 +1006,8 @@ char *legends[LegendsNum] = {"<q> toggle processor",
                              "<r> best fit",
                              "<t> worst fit",
                              "<y> toggle priority",
-                             "<u> toggle sound",
+                             "<u> toggle print mode",
+                             "<i> toggle sound",
                              "",
                              "<Esc> exit"};
 
@@ -1309,7 +1352,7 @@ void updateWIStack(SDL_Renderer *renderer, WidgetIStack *widget, Stack *stack)
 WidgetLegend *legendW;
 WidgetIStack *iStackW;
 
-#define StatusNum 7
+#define StatusNum 8
 
 char *statusVals[StatusNum] = {
     "processor ",
@@ -1318,6 +1361,7 @@ char *statusVals[StatusNum] = {
     "best fit ",
     "worst fit ",
     "priority",
+    "print iStack",
     "sound",
 };
 
@@ -1392,7 +1436,7 @@ WidgetStatus *initStatusW(SDL_Renderer *renderer)
     return status;
 }
 
-void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor, bool queue, bool stategy, int priority, bool sound)
+void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor, bool queue, int strategy, int priority, bool sound, int printIndx)
 {
     // processor + queue
     int vals[2] = {processor, queue};
@@ -1412,22 +1456,34 @@ void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor,
     }
 
     // strategy
-    for (int i = 0; i < 3; i++)
+    for (int i = 2; i < 5; i++)
     {
-        if (i == stategy)
+        if (i - 2 == strategy)
         {
-            changeTextColor(widget->vals[i + 2], GREENCLR);
-            updateText(renderer, widget->vals[i + 2], "<on>");
+            changeTextColor(widget->vals[i], GREENCLR);
+            updateText(renderer, widget->vals[i], "<on>");
         }
         else
         {
-            changeTextColor(widget->vals[i + 2], REDCLR);
-            updateText(renderer, widget->vals[i + 2], "<off>");
+            changeTextColor(widget->vals[i], REDCLR);
+            updateText(renderer, widget->vals[i], "<off>");
         }
     }
 
     // priority
     if (priority)
+    {
+        changeTextColor(widget->vals[StatusNum - 3], GREENCLR);
+        updateText(renderer, widget->vals[StatusNum - 3], "<on>");
+    }
+    else
+    {
+        changeTextColor(widget->vals[StatusNum - 3], REDCLR);
+        updateText(renderer, widget->vals[StatusNum - 3], "<off>");
+    }
+
+    // print mode
+    if (printIndx )
     {
         changeTextColor(widget->vals[StatusNum - 2], GREENCLR);
         updateText(renderer, widget->vals[StatusNum - 2], "<on>");
@@ -1437,7 +1493,7 @@ void updateStatusW(SDL_Renderer *renderer, WidgetStatus *widget, bool processor,
         changeTextColor(widget->vals[StatusNum - 2], REDCLR);
         updateText(renderer, widget->vals[StatusNum - 2], "<off>");
     }
-    
+
     // sound
     if (sound)
     {
@@ -1714,6 +1770,7 @@ bool runQueue = false;
 int loadingStrategy = 0; /*first f best f worst f*/
 bool priority = false;
 bool sound = true;
+int printIndx = 0;
 #include "SDL2/SDL_mixer.h"
 #define soundsNum 4
 
@@ -1741,6 +1798,374 @@ void playSound(int soundId, bool canPlay)
         //Mix_PlayMusic(sounds[soundId], 0);
     }
 }
+#include <assert.h>
+const char *udPath = "data/userdata";
+
+char **str_split(char *a_str, const char a_delim)
+{
+    char **result = 0;
+    size_t count = 0;
+    char *tmp = a_str;
+    char *last_comma = 0;
+    char delim[2];
+    delim[0] = a_delim;
+    delim[1] = 0;
+
+    /* Count how many elements will be extracted. */
+    while (*tmp)
+    {
+        if (a_delim == *tmp)
+        {
+            count++;
+            last_comma = tmp;
+        }
+        tmp++;
+    }
+
+    /* Add space for trailing token. */
+    count += last_comma < (a_str + strlen(a_str) - 1);
+
+    /* Add space for terminating null string so caller
+       knows where the list of returned strings ends. */
+    count++;
+
+    result = malloc(sizeof(char *) * count);
+
+    if (result)
+    {
+        size_t idx = 0;
+        char *token = strtok(a_str, delim);
+
+        while (token)
+        {
+            assert(idx < count);
+            *(result + idx++) = strdup(token);
+            token = strtok(0, delim);
+        }
+        assert(idx == count - 1);
+        *(result + idx) = 0;
+    }
+
+    return result;
+}
+
+int clk;
+int newRamSz;
+int stacks;
+int queueL;
+
+List *partsizes;
+List *queueLens;
+List *processes;
+
+int getUserData()
+{
+
+    FILE *file;
+    char *line = NULL;
+    size_t len = 0;
+    __ssize_t read;
+
+    file = fopen(udPath, "r");
+    if (!file)
+    {
+        return 0;
+    }
+
+    partsizes = initList();
+    queueLens = initList();
+    processes = initList();
+
+    char **tokens;
+    List *queueLens2 = initList();
+    ListNode *current;
+    int priority = 0;
+    Process *process;
+
+    for (int i = 0; (read = getline(&line, &len, file)) != -1; i++)
+    {
+        // vars
+        if (i < 4)
+        {
+            int val = atoi(line);
+
+            switch (i)
+            {
+            case 0:
+                clk = val;
+                break;
+            case 1:
+                stacks = val;
+                break;
+            case 2:
+                queueL = val;
+                break;
+            default:
+                newRamSz = val;
+                break;
+            }
+        }
+
+        // partsSize
+        if (4 < i && i < 4 + stacks + 1)
+        {
+            int *val = (int *)malloc(sizeof(int));
+            *val = atoi(line);
+            addListNode1(partsizes, val);
+        }
+
+        // queuesLength
+
+        if (i == 4 + stacks + 1 + 1)
+        {
+            tokens = str_split(line, ' ');
+            if (tokens)
+            {
+
+                for (int j = 0; *(tokens + j); j++)
+                {
+                    int *val = (int *)malloc(sizeof(int));
+                    int *val2 = (int *)malloc(sizeof(int));
+                    *val = atoi(*(tokens + j));
+                    *val2 = atoi(*(tokens + j));
+
+                    addListNode1(queueLens, val);
+                    addListNode1(queueLens2, val2);
+                }
+                free(tokens);
+            }
+        }
+
+        // processes
+        if (4 + stacks + 1 + 1 + 1 < i)
+        {
+            if (i == 4 + stacks + 1 + 1 + 1 + 1)
+            {
+                current = queueLens2->head;
+            }
+
+            if (!*((int *)current->val))
+            {
+                current = current->next;
+                priority++;
+                i++;
+            }
+            else
+            {
+                *((int *)current->val) -= 1;
+
+                tokens = str_split(line, ' ');
+                if (tokens)
+                {
+                    process = initProcess();
+                    process->priority = stacks - priority;
+                    for (int j = 0; *(tokens + j); j++)
+                    {
+                        int val = atoi(*(tokens + j));
+                        switch (j)
+                        {
+                        case 0: // size
+                            process->size = val;
+                            break;
+                        case 1: // clk
+                            process->clocks = val;
+                            process->exeTime = val * clk;
+                            process->exeTime = (float)(process->exeTime) / 1000;
+                            break;
+                        case 2: // r
+                            process->color.r = val;
+                            break;
+                        case 3: // g
+                            process->color.g = val;
+                            break;
+
+                        case 4: // b
+                            process->color.b = val;
+                            break;
+
+                        default: // a
+                            process->color.a = val;
+                            break;
+                        }
+                    }
+                    free(tokens);
+                    addListNode1(processes, process);
+                }
+            }
+        }
+    }
+
+    fclose(file);
+    if (line)
+    {
+        free(line);
+    }
+
+    return 1;
+}
+
+int checkUserData()
+{
+    // check initial vars
+    int vars[4] = {clk, stacks, queueL, newRamSz};
+    for (int i = 0; i < 4; i++)
+    {
+        if (!vars[i])
+        {
+            return 0;
+        }
+    }
+
+    int comp[3] = {CLK, iStackLength, iQueueLength};
+    for (int i = 0; i < 3; i++)
+    {
+        if (vars[i] != comp[i])
+        {
+            return 0;
+        }
+    }
+
+    // check partsSize
+
+    int totalPartsSz = 0;
+    ListNode *current = partsizes->head;
+    int val;
+    while (current)
+    {
+        val = *(int *)(current->val);
+        if (!val)
+        {
+            return 0;
+        }
+        totalPartsSz += val;
+
+        current = current->next;
+    }
+
+    if (totalPartsSz != newRamSz)
+    {
+        return 0;
+    }
+
+    // check the queueLens
+    int processesNum = 0;
+    current = queueLens->head;
+    while (current)
+    {
+        if (*((int *)current->val) > queueL)
+        {
+            return 0;
+        }
+        processesNum += *((int *)current->val);
+        current = current->next;
+    }
+
+    // check the processes
+    current = processes->head;
+    Process *currentPrc;
+    int clrs[4];
+    while (current)
+    {
+        currentPrc = current->val;
+
+        // clock check
+        if (!currentPrc->clocks)
+        {
+            return 0;
+        }
+
+        // check priority
+        if (currentPrc->priority <= 0 || currentPrc->priority > stacks)
+        {
+            return 0;
+        }
+
+        // colors check
+        clrs[0] = currentPrc->color.r;
+        clrs[1] = currentPrc->color.g;
+        clrs[2] = currentPrc->color.b;
+        clrs[3] = currentPrc->color.a;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (!clrs[i])
+            {
+                return 0;
+            }
+        }
+
+        current = current->next;
+    }
+
+    return 1;
+}
+
+int setUserData(Stack *iStk, Ram *ram)
+{
+    // free queueLens
+    while (getListLength(queueLens))
+    {
+        removeListNode(queueLens, 0);
+    }
+    free(queueLens);
+
+    // load processes
+    ListNode *currentProcess = processes->head;
+
+    Queue *currentQueue = popStackNode(iStack);
+    Stack *tmpStack = initStack();
+    pushStackNode(tmpStack, currentQueue);
+
+    int currentPriority = iStackLength;
+
+    while (currentProcess)
+    {
+        if (((Process *)currentProcess->val)->priority != currentPriority)
+        {
+            currentPriority -= 1;
+            currentQueue = popStackNode(iStack);
+            pushStackNode(tmpStack, currentQueue);
+        }
+
+        // load
+        pushQueueNode(currentQueue, currentProcess->val);
+
+        currentProcess = currentProcess->next;
+        removeListNode(processes, 0);
+    }
+
+    while (!emptyStack(tmpStack))
+    {
+        pushStackNode(iStk, popStackNode(tmpStack));
+    }
+    free(tmpStack);
+
+    free(processes);
+
+    // setup ram
+    ramSize = newRamSz;
+    ListNode *current = ram->partitions->head;
+    Partition *currentP;
+
+    ListNode *currentPsz = partsizes->head;
+    // delete partitions excess
+    while (getListLength(ram->partitions) != getListLength(partsizes))
+    {
+        freeArray(((Partition *)getListQueue(ram->partitions)->val)->startAdr);
+        removeListNode(ram->partitions, getListLength(ram->partitions) - 1);
+    }
+
+    while (current)
+    {
+        currentP = current->val;
+        currentP->size = *((int *)currentPsz->val);
+
+        current = current->next;
+        currentPsz = currentPsz->next;
+        removeListNode(partsizes, 0);
+    }
+    free(partsizes);
+}
 void eventFunc(SDL_Event e)
 {
     // keyboard events
@@ -1750,26 +2175,32 @@ void eventFunc(SDL_Event e)
         switch (e.key.keysym.sym)
         {
 
-        case 113: // q
+        case SDLK_q: // q
             runProcessor = !runProcessor;
             break;
-        case 119: // w
+        case SDLK_w: // w
             runQueue = !runQueue;
             break;
-        case 101: // e first
+        case SDLK_e: // e first
             loadingStrategy = 0;
             break;
-        case 114: // r best
+        case SDLK_r: // r best
             loadingStrategy = 1;
             break;
-        case 116: // t worst
+        case SDLK_t: // t worst
             loadingStrategy = 2;
             break;
-        case 121: // y
+        case SDLK_y: // y
             priority = !priority;
             break;
-
-        case 117: // u
+        case SDLK_u:
+            printIndx += 1;
+            if (printIndx > 2)
+            {
+                printIndx = 0;
+            }
+            break;
+        case SDLK_i: // i
             sound = !sound;
             break;
 
@@ -1805,7 +2236,7 @@ void loopFunc(Window *window)
                 if (queueLength(currentQueue) < iQueueLength)
                 {
                     currentProcess = initProcess();
-                    currentProcess->priority = currentNodeIndx;
+                    currentProcess->priority = iStackLength - currentNodeIndx; // invert
                     pushQueueNode(currentQueue, currentProcess);
 
                     break;
@@ -1876,8 +2307,16 @@ void loopFunc(Window *window)
             };
         }
 
-        // print the ram
-        // printRam(ramPartitions);
+        if (printIndx == 1)
+        {
+            // print iStack
+            printIStack(iStack);
+        }
+        if (printIndx == 2)
+        {
+            // print the ram
+            printRam(ramPartitions);
+        }
 
         // refresh
         SDL_SetRenderDrawColor(window->renderer, BGCLR.r, BGCLR.g, BGCLR.b, BGCLR.a);
@@ -1893,7 +2332,7 @@ void loopFunc(Window *window)
         updateRawW(renderer, ramW, ramPartitions);
         drawRawW(renderer, ramW);
 
-        updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority, sound);
+        updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority, sound, printIndx);
         drawStatusW(renderer, statusW);
 
         drawLegendW(renderer, legendW);
@@ -1924,18 +2363,33 @@ int main(int argc, char *args[])
 
     ramPartitions = initRam();
 
+    // getUserData
+    if (getUserData())
+    {
+        printf("userdata loaded\n");
+        if (checkUserData())
+        {
+            // setup the structs according to the userdata
+            setUserData(iStack, ramPartitions);
+            printf("userdata set\n");
+        }
+        else
+        {
+            printf("userdata corrupted\n");
+        }
+    }
+
     // widgets inits
     legendW = initLengendW(renderer);
     statusW = initStatusW(renderer);
 
     iStackW = initWIStack();
     ramW = initRamW();
-    
-    //init sound
-    initSounds();
 
+    // init sound
+    initSounds();
 
     mainLoop(window, eventFunc, loopFunc);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
