@@ -50,7 +50,7 @@ char **str_split(char *a_str, const char a_delim)
 }
 
 int clk;
-int ram;
+int newRamSz;
 int stacks;
 int queueL;
 
@@ -101,7 +101,7 @@ int getUserData()
                 queueL = val;
                 break;
             default:
-                ram = val;
+                newRamSz = val;
                 break;
             }
         }
@@ -207,7 +207,7 @@ int getUserData()
 int checkUserData()
 {
     // check initial vars
-    int vars[4] = {clk, stacks, queueL, ram};
+    int vars[4] = {clk, stacks, queueL, newRamSz};
     for (int i = 0; i < 4; i++)
     {
         if (!vars[i])
@@ -242,7 +242,7 @@ int checkUserData()
         current = current->next;
     }
 
-    if (totalPartsSz != ram)
+    if (totalPartsSz != newRamSz)
     {
         return 0;
     }
@@ -300,11 +300,69 @@ int checkUserData()
     return 1;
 }
 
-int setUserData()
+int setUserData(Stack *iStk, Ram *ram)
 {
-
-    // init ram
-    ramSize = ram;
+    // free queueLens
+    while (getListLength(queueLens))
+    {
+        removeListNode(queueLens, 0);
+    }
+    free(queueLens);
 
     // load processes
+    ListNode *currentProcess = processes->head;
+
+    Queue *currentQueue = popStackNode(iStack);
+    Stack *tmpStack = initStack();
+    pushStackNode(tmpStack, currentQueue);
+
+    int currentPriority = iStackLength;
+
+    while (currentProcess)
+    {
+        if (((Process *)currentProcess->val)->priority != currentPriority)
+        {
+            currentPriority -= 1;
+            currentQueue = popStackNode(iStack);
+            pushStackNode(tmpStack, currentQueue);
+        }
+
+        // load
+        pushQueueNode(currentQueue, currentProcess->val);
+
+        currentProcess = currentProcess->next;
+        removeListNode(processes, 0);
+    }
+
+    while (!emptyStack(tmpStack))
+    {
+        pushStackNode(iStk, popStackNode(tmpStack));
+    }
+    free(tmpStack);
+
+    free(processes);
+
+    // setup ram
+    ramSize = newRamSz;
+    ListNode *current = ram->partitions->head;
+    Partition *currentP;
+
+    ListNode *currentPsz = partsizes->head;
+    // delete partitions excess
+    while (getListLength(ram->partitions) != getListLength(partsizes))
+    {
+        freeArray(((Partition *)getListQueue(ram->partitions)->val)->startAdr);
+        removeListNode(ram->partitions, getListLength(ram->partitions) - 1);
+    }
+
+    while (current)
+    {
+        currentP = current->val;
+        currentP->size = *((int *)currentPsz->val);
+
+        current = current->next;
+        currentPsz = currentPsz->next;
+        removeListNode(partsizes, 0);
+    }
+    free(partsizes);
 }
