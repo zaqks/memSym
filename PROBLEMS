@@ -1,6 +1,3 @@
-add print Queue
-add switch between print queue/ram
-
 add onClose function to free everything
 
 libs/SDL/widgets/Text.h line 64:
@@ -11,4 +8,6 @@ FIXED###############################
 libs/dataStructs/lists.h line 92
 replace the int with void*
 repalce %d with %p
-
+add print Queue
+add switch between print queue/ram
+add userdata support
