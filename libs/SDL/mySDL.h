@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #define REFRESHRATE 33
-#define FULLSCREEN true
+#define FULLSCREEN false
 
 int SCREEN_WIDTH = 1024;
 int SCREEN_HEIGHT = 780;

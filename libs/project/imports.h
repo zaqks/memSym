@@ -2,6 +2,7 @@
 
 #include "widgets/styleVars.h"
 
+#include "../dataStructs/listsRec.h"
 #include "../dataStructs/lists.h"
 #include "../dataStructs/queue.h"
 #include "../dataStructs/stack.h"
