@@ -4,7 +4,7 @@
 
 #define REFRESHRATE 33
 
-#define FULLSCREEN true
+#define FULLSCREEN false
 
 
 int SCREEN_WIDTH = 1024;
@@ -121,9 +121,6 @@ SDL_Color BLUECLR = {0, 0, 255, 255};
 //
 
 int MAINPADDING = 20;//*ratio w:h
-#include <stdlib.h>
-#include <stdio.h>
-
 typedef struct listNode
 {
     void *val;
@@ -135,6 +132,32 @@ typedef struct
     ListNode *head;
 } List;
 
+int getListLengthRec(ListNode *head, int indx)
+{
+    if (!head)
+    {
+        return indx;
+    }
+    getListLengthRec(head->next, indx + 1);
+}
+
+ListNode *getListQueueRec(ListNode *head)
+{
+    if (!head->next)
+    {
+        return head;
+    }
+    getListQueueRec(head->next);
+}
+
+void printListRec(ListNode *head)
+{
+    if (head)
+    {
+        printf("%p ", head->val);
+        printListRec(head->next);
+    }
+}
 List *initList()
 {
     List *lst = (List *)malloc(sizeof(List));
@@ -143,31 +166,12 @@ List *initList()
 
 int getListLength(List *lst)
 {
-    int length = 0;
-    ListNode *current = lst->head;
-    while (current)
-    {
-        length++;
-        current = current->next;
-    }
-
-    return length;
+    return getListLengthRec(lst->head, 0);
 }
 
 ListNode *getListQueue(List *lst)
 {
-    ListNode *current = lst->head;
-    while (current)
-    {
-        if (current->next)
-        {
-            current = current->next;
-        }
-        else
-        {
-            return current;
-        }
-    }
+    return getListQueueRec(lst->head);
 }
 
 // queue mode
@@ -232,13 +236,7 @@ int removeListNode(List *lst, int indx)
 void printList(List *lst)
 {
     printf("[");
-    ListNode *current = lst->head;
-    while (current)
-    {
-        void *val = (void *)current->val;
-        printf("%p ", val);
-        current = current->next;
-    }
+    printListRec(lst->head);
     printf("]");
 }
 
@@ -911,6 +909,7 @@ void printIStack(Stack *stk)
     free(tmpStk);
     printf("_______________________\n\n\n");
 }
+#include <stdlib.h>
 #include <strings.h>
 
 typedef struct
