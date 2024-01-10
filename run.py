@@ -26,7 +26,8 @@ while choice > funcs.__len__() - 1 or choice < 1:
     try:
         choice = int(input())
     except:
-        choice = -1
+        # auto compile
+        choice = 1
 
     # for run t0ggle
     if choice == 0:

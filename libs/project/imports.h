@@ -14,6 +14,7 @@
 #include "../dataStructs/ram.h"
 
 #include "../SDL/widgets/Text.h"
+#include "../SDL/widgets/Parallelogram.h"
 
 #include "widgets/legend.h"
 #include "widgets/process.h"
