@@ -20,47 +20,109 @@ coupled with an i5-6300U CPU @ 2.40GHz quad core)
 so it's garenteed that it will be compatible with the system's drivers as long as
 you are using any Linux Distro
 
-on windows there is a small probability of facing some compatibility 
+on windows there is a small probability of facing some compatibility
 issues which will be discussed later renforced by the fact it wasnt
 tested on any windows version
 
 - Linux
-the easy and direct way to run memSym is to directly use the main binary
-since it is the compilation result of our source files 
-so you don't need to worry about having a c compiler
-just go to the build folder and run the main binay by double clicking it
-or by using your terminal(recommanded since there is a functionality of 
-display some data on it)
+  the easy and direct way to run memSym is to directly use the main binary
+  since it is the compilation result of our source files
+  so you don't need to worry about having a c compiler
+  just go to the build folder and run the main binay by double clicking it
+  or by using your terminal(recommanded since there is a functionality of
+  display some data on it)
 
 another way is to recompile the codebase which is useless if you don't want
 to change something in the code
 to do so, you need first to have the gcc compiler installed in your system
-which is availble by default in some linux ditros such Ubuntu 
+which is availble by default in some linux distros such Ubuntu
 (you can use any compiler you want but gcc is adviced as it was used in this project)
 now if you have a basic knowledge about compilers you could easily compile everything
 by including the required header files that would be mentioned later then you run the binary
 
-else a python script was written to do the compilation process for you using gcc and running 
+else a python script was written to do the compilation process for you using gcc and running
 the project just to avoid typing the long commands and including the header files
-so you just need to rebuild the project by running the build.py file after installing the python 
-interpreter in your system of course then run it using build/main as previously described
-
-
+so you just need to rebuild the project by running the run.py file after installing the python
+interpreter in your system of course then run it using build/main as previously described or it
+would be ran automatically after the compilation process if you're choosen
 
 - Windows
-for windows there are no compiled executable files to directly run the program
-so you need to compile everything using a c compiler for windows such mingw-64
-depending on you system architecture in a Windows or Linux OS 
-then you just run the executable file and here you go
+  for windows there are no compiled executable files to directly run the program
+  so you need to compile everything using a c compiler for windows such mingw
+  depending on you system architecture in a Windows or Linux OS with the installed
+  headers, then you copy the executable file to the build folder and run it from there
+  and here you go
 
 # how to use it
 
 after running the program you can see an User Interface that contains
 3 sections in a row
 
+by looking at the third section at the righ you can see to other sections
+display in a column
+the first on at the top is the vitual processor status
+the second one at the bottom contains the control keys to interact with the
+program
+they were made to be easily memorized on a QWERTY keyboard but can be used on other
+keyboards also
+
+in the middle you can see an representation of the RAM in the form of empty partitions
+obviously since the virtual processor hasnt ran yet
+
+lastly, the one at the left which is the first one represents the iStack aka instruction stack
+that contains iQueues aka instruction queues (called also ready queues)
+basically the iQueues contains pending processes that will be loaded to the RAM for their execution
+the iStack contains the iQueues. the reason of the iStack existance is to implent what is called an execution
+priority; when enabled, forces the higher priority processes to be loaded first until the last one from
+the most left non empty iQueue then the lower ones to be loaded after
+
+seeing a realtime visualization is better than reading a description so you are invited to run the program
+or at least link what you are reading with the screenshots
+
+so enough explanations, let's start testing it out
+by looking at the controls section you can see the following:
+
+<q> toggle processor
+<w> toggle queue
+<e> first fit
+<r> best fit
+<t> worst fit
+<y> toggle priority
+<u> toggle print mode
+<i> toggle sound
+
+<Esc> exit
+
+each key of the above ones triggers a particular action
+now each action's status (if it is enabled or not) can be
+observed in the status section as the following:
+
+<off> processor
+<off> queue
+<on> first fit
+<off> best fit
+<off> worst fit
+<off> priority
+<off> print iStack
+<on> sound
+
+
+to start the execution you need to fill the iQueues else nothing will be 
+executed
+there are 2 ways to fill it
+
+the first one is from  a file located in build/data/userdata 
+which contains a parts when the iStack is defined
+and it will be discussed later as it is written in a custom scripting language
+so the user can define how the iStack looks when staring the program by writing 
+his own state
+if the file contains an error or doesn't even exist then the program will randomly 
+create an iQueue following certain rules. in this case we are talking about the second
+method to fill the iQueues
+the second way consists of 
+
+
 # what does it do
-
-
 
 the virtual processor is by default defined in the program by
 its specs which are:
@@ -69,8 +131,7 @@ its specs which are:
 *3 iQueues of 10 processes slots each
 *30 pending processes slots according to the iStack
 and iQueues specs
-*a 1024Bytes RAM (1KB)
-
+\*a 1024Bytes RAM (1KB)
 
 # how it works
 
