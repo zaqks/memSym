@@ -28,20 +28,30 @@ tested on any windows version
 the easy and direct way to run memSym is to directly use the main binary
 since it is the compilation result of our source files 
 so you don't need to worry about having a c compiler
+just go to the build folder and run the main binay by double clicking it
+or by using your terminal(recommanded since there is a functionality of 
+display some data on it)
 
 another way is to recompile the codebase which is useless if you don't want
 to change something in the code
 to do so, you need first to have the gcc compiler installed in your system
-which is avaible by default in some linux ditros such Ubuntu 
-(you can use any compiler you want but gcc is recommanded as it was used in this project)
+which is availble by default in some linux ditros such Ubuntu 
+(you can use any compiler you want but gcc is adviced as it was used in this project)
 now if you have a basic knowledge about compilers you could easily compile everything
 by including the required header files that would be mentioned later then you run the binary
-else a python script was written to do compilation process for you using gcc and run the project 
-just to avoid type the long command and including the header files
-so you just need to run the compile.py file after installing the python interpreter in your system
+
+else a python script was written to do the compilation process for you using gcc and running 
+the project just to avoid typing the long commands and including the header files
+so you just need to rebuild the project by running the build.py file after installing the python 
+interpreter in your system of course then run it using build/main as previously described
+
+
 
 - Windows
-
+for windows there are no compiled executable files to directly run the program
+so you need to compile everything using a c compiler for windows such mingw-64
+depending on you system architecture in a Windows or Linux OS 
+then you just run the executable file and here you go
 
 # how to use it
 
