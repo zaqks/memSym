@@ -47,14 +47,22 @@ void drawRawW(SDL_Renderer *renderer, WidgetRam *widget)
     SDL_RenderDrawRect(renderer, widget->grpRect);
 
     // partitions
+    Stack *toDraw = initStack();
+
     ListNode *current = widget->partitionsW->head;
-    for (int i = 0; i < getListLength(widget->partitionsW); i++)
+    
+    while (current)
     {
-        drawPartitionW(renderer, current->val);
+        pushStackNode(toDraw, current->val);
         current = current->next;
     }
 
-    // printf("draw ram\n");
+    while (!emptyStack(toDraw))
+    {
+        drawPartitionW(renderer, popStackNode(toDraw));
+    }
+
+    free(toDraw);
 }
 
 void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)

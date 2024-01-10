@@ -60,9 +60,9 @@ void drawWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget)
     }
 
     // draw processesRects
-    for (int i = 0; i < widget->processesNum; i++)
+    for (int i = widget->processesNum; i > 0; i--)
     {
-        drawProcessW(renderer, widget->processesW[i]);
+        drawProcessW(renderer, widget->processesW[i - 1]);
     }
 }
 

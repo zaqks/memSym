@@ -228,6 +228,15 @@ by understanding some of it's main concepts, we can easily
 understand how memSym works since it was made using a custom
 game engine
 
+-what is a game engine
+-what is a gameloop
+ -mainLoop
+ -eventLoop
+
+-custom game engine
+  -what is sdl
+  -widget
+  -sound support
 
 # how was it made (a dive into the code)
 

@@ -158,16 +158,17 @@ void loopFunc(Window *window)
         // updateWIQueue(renderer, iQueueW, iQueue);
         // drawWIQueue(renderer, iQueueW);
 
-        updateWIStack(renderer, iStackW, iStack);
-        drawWIStack(renderer, iStackW);
-
-        updateRawW(renderer, ramW, ramPartitions);
-        drawRawW(renderer, ramW);
-
         updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority, sound, printIndx);
         drawStatusW(renderer, statusW);
 
         drawLegendW(renderer, legendW);
+
+        updateRawW(renderer, ramW, ramPartitions);
+        drawRawW(renderer, ramW);
+
+        updateWIStack(renderer, iStackW, iStack);
+        drawWIStack(renderer, iStackW);
+
         //
         SDL_RenderPresent(window->renderer);
         counter = 0;

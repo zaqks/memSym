@@ -15,6 +15,9 @@ typedef struct
 } WidgetProcess;
 
 #define txtPadding 5
+#define beta 45
+#define maxProcZ 50
+
 TTF_Font *processFont;
 
 WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width, int height, int x, int y)
@@ -45,15 +48,21 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     // 3d faces
 
     // face2
-    double b = atan((double)width / height);
-    int zH = 50;
-    Parallelogram *face2 = initParallelogram(x, y, zH * sin(b), height, 0, -zH * cos(b));
+    // double b = atan((double)width / height);
+
+    double zH = maxProcZ;
+    if (process->clocks >= 0)
+    {
+        zH *= ((double)process->clocks / MaxProcCLK);
+    }
+
+    Parallelogram *face2 = initParallelogram(x, y, zH * sin(beta), height, 0, -zH * cos(beta));
     widget->face2 = face2;
 
     mainRect->x += face2->w;
     mainRect->y += face2->y3;
     // face1
-    Parallelogram *face1 = initParallelogram(x + face2->w, y + face2->h + face2->y3 , width, zH * cos(b), -face2->w, 0);
+    Parallelogram *face1 = initParallelogram(x + face2->w, y + face2->h + face2->y3, width, zH * cos(beta), -face2->w, 0);
     widget->face1 = face1;
     // id text
 
@@ -101,9 +110,12 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
     drawParallelogram(renderer, process->face1, true);
     drawParallelogram(renderer, process->face2, true);
 
-    // draw body
-    // SDL_RenderFillRect(renderer, process->mainRect);
-
+    // draw facing area
+    SDL_SetRenderDrawColor(renderer, BGCLR.r,
+                           BGCLR.g,
+                           BGCLR.b,
+                           BGCLR.a);
+    SDL_RenderFillRect(renderer, process->mainRect);
     SDL_RenderDrawRect(renderer, process->mainRect);
 
     // draw text

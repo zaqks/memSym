@@ -41,9 +41,10 @@ void drawWIStack(SDL_Renderer *renderer, WidgetIStack *widget)
     */
 
     // draw iQueues
-    for (int i = 0; i < iStackLength; i++)
+
+    for (int i = iStackLength; i > 0; i--)
     {
-        drawWIQueue(renderer, widget->queuesW[i]);
+        drawWIQueue(renderer, widget->queuesW[i - 1]);
     }
 }
 

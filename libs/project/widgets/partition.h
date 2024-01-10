@@ -79,12 +79,20 @@ void drawPartitionW(SDL_Renderer *renderer, WidgetPartition *widget)
     SDL_RenderDrawRect(renderer, widget->mainRect);
 
     // processes
+    Stack *toDraw = initStack();
+
     ListNode *current = widget->processW->head;
     while (current)
     {
-        drawProcessW(renderer, current->val);
+        pushStackNode(toDraw, current->val);
         current = current->next;
     }
+    while (!emptyStack(toDraw))
+    {
+        drawProcessW(renderer, popStackNode(toDraw));
+    }
+
+    free(toDraw);
 
     // addr txt
     drawText(renderer, widget->addrTxt);
