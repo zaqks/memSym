@@ -1,3 +1,5 @@
+add 3D support
+
 add onClose function to free everything
 
 libs/SDL/widgets/Text.h line 64:
