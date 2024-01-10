@@ -64,7 +64,7 @@ the first on at the top is the vitual processor status
 the second one at the bottom contains the control keys to interact with the
 program
 they were made to be easily memorized on a QWERTY keyboard but can be used on other
-keyboards alsoyou will 
+keyboards alsoyou will
 
 in the middle you can see an representation of the RAM in the form of empty partitions
 obviously since the virtual processor hasnt ran yet
@@ -106,24 +106,22 @@ observed in the status section as the following:
 <off> print iStack
 <on> sound
 
-
-to start the execution you need to fill the iQueues else nothing will be 
+to start the execution you need to fill the iQueues else nothing will be
 executed
 there are 2 ways to fill it
 
-the first one is from  a file located in build/data/userdata 
+the first one is from a file located in build/data/userdata
 which contains a parts when the iStack is defined
 and it will be discussed later as it is written in a custom scripting language
-so the user can define how the iStack looks when staring the program by writing 
+so the user can define how the iStack looks when staring the program by writing
 his own state
-if the file contains an error or doesn't even exist then the program will randomly 
+if the file contains an error or doesn't even exist then the program will randomly
 create an iQueue following certain rules. in this case we are talking about the second
 method to fill the iQueues
 so the second way consists of letting the the program fill it by him self
 to do so, all you need is to toggle it by press the <w> and you will see the queues
 being filled with process progressivly according to the virtual processing clock
 and you can stop it by pressing the same key again as it is a toggle key
-
 
 now we need to start the execution we need to load the processes in the RAM
 which will immediatly execute them
@@ -139,10 +137,10 @@ that's why the remaining space is converted into a new partiton
 so you've guessed it, a partiton is just a RAM division that allows the execution of multiple
 processes at the same time instead of one and this is called multi-threading
 
-you can that after each pressed key the status section is being update in order to 
+you can that after each pressed key the status section is being update in order to
 let the user have a complet understaing of what is going on
 
-you can also hear sounds while processing occurs and if you are not a big fan of it you can just 
+you can also hear sounds while processing occurs and if you are not a big fan of it you can just
 disable it by pressing the <i> key
 and as mentioned waay before, this is for a better interaction an to give a life to the program
 and a kind of enjoyement and fun to the user
@@ -165,7 +163,7 @@ those specs are:
 *3 iQueues of 10 processes slots each
 *30 pending processes slots according to the iStack
 and iQueues specs
-*a 1024Bytes RAM (1KB) which is the total size of
+\*a 1024Bytes RAM (1KB) which is the total size of
 our RAM partitions
 
 by default our virtual processor clock is tunned to 4Hz which meaning 4 cycles/s
@@ -176,12 +174,43 @@ and we will see soon how to do it
 
 a process is a sequence of instructions that requires a certain number of clock cycles
 in order for it to be terminated
-from here we can estimate lifespan of a process (infinity life span )
+from here we can estimate the lifespan of a process using the following formula:
+lifeSpan(in seconds) = processCycles/processorClock
 
+if the neccecary processing cycles value is less than 0, it means that the lifespan of this process is
+unlimited meaning it will run as long as the computer is running, this case applies mainly for system processes
+that are important such file indexing, drivers, the shell it self, or any process linked to a program are long as
+the program is responding
+a negative value can only be retrived from the defined user iQueue and can't be set automatically
+this
+
+now according to that for each processor being executed, you can see its remaining clock cycles
+are being decreased and updated
+
+once a process is terminated, it is deleted from its current partiton. that means the partiton in question in no
+longer occupied resulting in being free
+so what if we have multiple small free partitions that are not sufficient to hold new incomming proccesses?
+no worries, the program automatically merges the free partitions after each termination so that you can have
+new bigger partitions and this is the definition of partition merging introduced above
+
+and basically that's how you can use the memSym software
+
+if you want more details about what is going on
+we got you
+if you run the program from a terminal you will be
+able to see 3 new types of information
+*infos about the userdata,
+if it was loaded, corrupted
+this is shown at the begining of the program
+*iStack info
+shows the current iQueues and their content
+\*ramStatus
+shows the ram status, include the partitions
+and their content
 
 # what does it do
 
-# how it works
+# how it works (a dive into the code)
 
 gameloop concept
 
@@ -208,6 +237,5 @@ gameloop concept
 - merging
 
 -git+Github
-
 
 # what to add
