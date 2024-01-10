@@ -199,14 +199,17 @@ if you want more details about what is going on
 we got you
 if you run the program from a terminal you will be
 able to see 3 new types of information
-*infos about the userdata,
+infos about the userdata,
 if it was loaded, corrupted
-this is shown at the begining of the program
-*iStack info
-shows the current iQueues and their content
-\*ramStatus
-shows the ram status, include the partitions
+this is shown at the begining of the program,
+iStack info
+shows the current iQueues and their content,
+ramStatus
+shows the ram status, including the partitions
 and their content
+
+we can toggle between showing iStack or ram informations or nothing
+we using the <u> key
 
 # what does it do
 

@@ -81,7 +81,9 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
                            process->color.g,
                            process->color.b,
                            process->color.a);
+    //SDL_RenderFillRect(renderer, process->mainRect);
     SDL_RenderDrawRect(renderer, process->mainRect);
+    
 
     // draw text
     drawText(renderer, process->idTxt);
