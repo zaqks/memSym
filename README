@@ -3,7 +3,7 @@
 memSym stands for "memory simulator"
 it is a process memory allocation simulation software built in C
 which allows you to visualize in realtime mainly through the UI
-how a virtual processor manages a computer's central memory for
+how a virtual processor manages a hsi central memory for
 processes execution after being loaded to the RAM without dismissing
 the fact that each operation is followed by a particular sound to
 provide a maximum user experience and understanding of each system state
@@ -193,8 +193,6 @@ so what if we have multiple small free partitions that are not sufficient to hol
 no worries, the program automatically merges the free partitions after each termination so that you can have
 new bigger partitions and this is the definition of partition merging introduced above
 
-and basically that's how you can use the memSym software
-
 if you want more details about what is going on
 we got you
 if you run the program from a terminal you will be
@@ -211,13 +209,27 @@ and their content
 we can toggle between showing iStack or ram informations or nothing
 we using the <u> key
 
-# what does it do
+and basically that's how you can easily interact with
+the memSym software
 
-# how it works (a dive into the code)
+# how it works
 
-gameloop concept
+now after giving a basic overview about the software
+and how to use it, let's dive a little deep into the
+concepts used to make all the magic happen before seeing
+the actual code that runs under that hood
 
-# how was it made
+let's start about the core of our program, the mainloop
+
+in orders to explain this concept we need to travel from
+the world of software developement and engineering to
+one of its famous branches which is game developement
+by understanding some of it's main concepts, we can easily 
+understand how memSym works since it was made using a custom
+game engine
+
+
+# how was it made (a dive into the code)
 
 - project directory structure
 - used tools & requirements
