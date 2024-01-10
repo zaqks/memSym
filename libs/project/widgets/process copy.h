@@ -2,9 +2,6 @@ typedef struct
 {
     SDL_Color color;
     SDL_Rect *mainRect;
-    Parallelogram *face1;
-    Parallelogram *face2;
-
     Text *szTxt;
     Text *clkTxt;
     Text *priorityTxt;
@@ -42,31 +39,18 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
 
     widget->mainRect = mainRect;
 
-    // 3d faces
-
-    // face2
-    double b = atan((double)width / height);
-    int zH = 50;
-    Parallelogram *face2 = initParallelogram(x, y, zH * sin(b), height, 0, -zH * cos(b));
-    widget->face2 = face2;
-
-    mainRect->x += face2->w;
-    mainRect->y += face2->y3;
-    // face1
-    Parallelogram *face1 = initParallelogram(x + face2->w, y + face2->h + face2->y3 , width, zH * cos(b), -face2->w, 0);
-    widget->face1 = face1;
     // id text
 
     char *idVal = (char *)malloc(10);
     sprintf(idVal, "%d", process->id);
-    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, mainRect->x + txtPadding, mainRect->y + txtPadding);
+    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, x + txtPadding, y + txtPadding);
     widget->idTxt = idText;
 
     // size text
 
     char *sizeVal = (char *)malloc(10);
     sprintf(sizeVal, "%dB", process->size);
-    Text *sizeText = createText(renderer, processFont, NULL, 0, sizeVal, widget->color, mainRect->x, mainRect->y);
+    Text *sizeText = createText(renderer, processFont, NULL, 0, sizeVal, widget->color, x, y);
     sizeText->rect->x += mainRect->w - sizeText->rect->w - txtPadding;
     sizeText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
     widget->szTxt = sizeText;
@@ -74,7 +58,7 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     // clock text
     char *clkVal = (char *)malloc(10);
     sprintf(clkVal, "%dC", process->clocks);
-    Text *clkText = createText(renderer, processFont, NULL, 0, clkVal, widget->color, mainRect->x, mainRect->y);
+    Text *clkText = createText(renderer, processFont, NULL, 0, clkVal, widget->color, x, y);
     clkText->rect->x += txtPadding;
     clkText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
     widget->clkTxt = clkText;
@@ -83,7 +67,7 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     char *prVal = (char *)malloc(2);
     sprintf(prVal, "%d", process->priority);
 
-    Text *prText = createText(renderer, processFont, NULL, 0, prVal, widget->color, mainRect->x, idText->rect->y);
+    Text *prText = createText(renderer, processFont, NULL, 0, prVal, widget->color, x, idText->rect->y);
     prText->rect->x += mainRect->w - prText->rect->w - txtPadding;
     widget->priorityTxt = prText;
 
@@ -92,19 +76,14 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
 
 void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
 {
+    // draw body
     SDL_SetRenderDrawColor(renderer, process->color.r,
                            process->color.g,
                            process->color.b,
                            process->color.a);
-
-    // draw 3d faces
-    drawParallelogram(renderer, process->face1, true);
-    drawParallelogram(renderer, process->face2, true);
-
-    // draw body
-    // SDL_RenderFillRect(renderer, process->mainRect);
-
+    //SDL_RenderFillRect(renderer, process->mainRect);
     SDL_RenderDrawRect(renderer, process->mainRect);
+    
 
     // draw text
     drawText(renderer, process->idTxt);
@@ -116,9 +95,6 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
 void eraseProcessW(WidgetProcess *process)
 {
     free(process->mainRect);
-    free(process->face1);
-    free(process->face2);
-
     eraseText(process->idTxt);
     eraseText(process->szTxt);
     eraseText(process->clkTxt);
