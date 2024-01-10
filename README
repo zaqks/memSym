@@ -1,33 +1,91 @@
 # what is this
-software definition
+
+memSym stands for "memory simulator"
+it is a process memory allocation simulation software built in C
+which allows you to visualize in realtime mainly through the UI
+how a virtual processor manages a computer's central memory for
+processes execution after being loaded to the RAM without dismissing
+the fact that each operation is followed by a particular sound to
+provide a maximum user experience and understanding of each system state
+
+# how to run it
+
+there are 3 ways to run the program it depends on your operating system
+
+it is recommanded to be on a Linux OS as it provides the best developer
+experience ever and a full control over your system, and most importantly
+the software was built and tested on a custom Linux Kernel
+(Linux Arch with xfce/Gnome display server, x11 windowing system
+coupled with an i5-6300U CPU @ 2.40GHz quad core)
+so it's garenteed that it will be compatible with the system's drivers as long as
+you are using any Linux Distro
+
+on windows there is a small probability of facing some compatibility 
+issues which will be discussed later renforced by the fact it wasnt
+tested on any windows version
+
+- Linux
+the easy and direct way to run memSym is to directly use the main binary
+since it is the compilation result of our source files 
+so you don't need to worry about having a c compiler
+
+another way is to recompile the codebase which is useless if you don't want
+to change something in the code
+to do so, you need first to have the gcc compiler installed in your system
+which is avaible by default in some linux ditros such Ubuntu 
+(you can use any compiler you want but gcc is recommanded as it was used in this project)
+now if you have a basic knowledge about compilers you could easily compile everything
+by including the required header files that would be mentioned later then you run the binary
+else a python script was written to do compilation process for you using gcc and run the project 
+just to avoid type the long command and including the header files
+so you just need to run the compile.py file after installing the python interpreter in your system
+
+- Windows
+
+
+# how to use it
+
+after running the program you can see an User Interface that contains
+3 sections in a row
 
 # what does it do
-memory simulation
-iqueue i ram
+
+
+
+the virtual processor is by default defined in the program by
+its specs which are:
+*a clock speed of 4Hz (1 clock tick each 250ms)
+*a 3 levels iStack (3 levels of priority)
+*3 iQueues of 10 processes slots each
+*30 pending processes slots according to the iStack
+and iQueues specs
+*a 1024Bytes RAM (1KB)
+
 
 # how it works
+
 gameloop concept
 
 # how was it made
 
--project directory structure
--used tools
+- project directory structure
+- used tools & requirements
 
--sdl
-widgets(draw update ...)
-gameloop
-mainloop
-eventloop
+- sdl
+  -widgets(draw update ...)
+  -gameloop
+  -mainloop
+  -eventloop
 
--sound system
+- sound system
 
--userData concept + custom scripting langage
+- userData concept + custom scripting langage
 
--funcs
-dataStructs
+- funcs
+  -dataStructs
 
--compilation
+- compilation
 
--merging
+- merging
 
 -git+Github
