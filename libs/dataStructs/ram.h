@@ -205,8 +205,12 @@ int tickRam(Ram *ram) // returns if something was deleted
         for (int i = 0; i < currentProcesses->length; i++)
         {
             currentProcess = (Process *)currentProcesses->arr[i].val;
-            currentProcess->clocks -= 1;
-            currentProcess->exeTime -= (float)CLK / 1000;
+
+            if (currentProcess->clocks > 0)
+            {
+                currentProcess->clocks -= 1;
+                currentProcess->exeTime -= (float)CLK / 1000;
+            }
         }
 
         current = current->next;

@@ -63,5 +63,12 @@ void killProcess(Process *process)
 
 void printProcess(Process *process)
 {
-    printf("# process%d (~%.1fs remaing) lvl%d age:%s\n", process->id, process->exeTime, process->priority, process->arvTime);
+    if (process->clocks > 0)
+    {
+        printf("# process%d (~%.1fs remaing) lvl%d since:%s\n", process->id, process->exeTime, process->priority, process->arvTime);
+    }
+    else
+    {
+        printf("# process%d infinite lvl%d since:%s\n", process->id, process->priority, process->arvTime);
+    }
 }
