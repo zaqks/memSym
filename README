@@ -64,7 +64,7 @@ the first on at the top is the vitual processor status
 the second one at the bottom contains the control keys to interact with the
 program
 they were made to be easily memorized on a QWERTY keyboard but can be used on other
-keyboards also
+keyboards alsoyou will 
 
 in the middle you can see an representation of the RAM in the form of empty partitions
 obviously since the virtual processor hasnt ran yet
@@ -119,19 +119,67 @@ his own state
 if the file contains an error or doesn't even exist then the program will randomly 
 create an iQueue following certain rules. in this case we are talking about the second
 method to fill the iQueues
-the second way consists of 
+so the second way consists of letting the the program fill it by him self
+to do so, all you need is to toggle it by press the <w> and you will see the queues
+being filled with process progressivly according to the virtual processing clock
+and you can stop it by pressing the same key again as it is a toggle key
 
 
-# what does it do
+now we need to start the execution we need to load the processes in the RAM
+which will immediatly execute them
+so we just press the <q> key to toggle the execution process
+as you can see the processes are loaded one by one according to the selected
+allocation stategy that will be explained later and the priority status which
+was simply explained before.
+the allocation statergy can be selected using the keys: <e>, <r>, <t>
+while the toggle key of the priority is <y>
 
-the virtual processor is by default defined in the program by
-its specs which are:
+the process is loaded into a convinient partiton and as it only occupies a certain space
+that's why the remaining space is converted into a new partiton
+so you've guessed it, a partiton is just a RAM division that allows the execution of multiple
+processes at the same time instead of one and this is called multi-threading
+
+you can that after each pressed key the status section is being update in order to 
+let the user have a complet understaing of what is going on
+
+you can also hear sounds while processing occurs and if you are not a big fan of it you can just 
+disable it by pressing the <i> key
+and as mentioned waay before, this is for a better interaction an to give a life to the program
+and a kind of enjoyement and fun to the user
+
+each sound represents on of the following actions:
+clock tick, process execution started, process excution terminated, partition merged
+
+now you are wondering what is a clock tick; basically the processor operates with a certain speed
+which is called clock speed represented in GHz
+so to be clear if the clock speed is equal to 1Hz then you will have 1 operation per second
+the operation is called a cycle
+if you have a speed of 1GHz this means you have 1 billion clock cycles per second
+
+in our program we have defined some specs that are like the identity of a mini computer
+or a virtual machine
+those specs are:
+
 *a clock speed of 4Hz (1 clock tick each 250ms)
 *a 3 levels iStack (3 levels of priority)
 *3 iQueues of 10 processes slots each
 *30 pending processes slots according to the iStack
 and iQueues specs
-\*a 1024Bytes RAM (1KB)
+*a 1024Bytes RAM (1KB) which is the total size of
+our RAM partitions
+
+by default our virtual processor clock is tunned to 4Hz which meaning 4 cycles/s
+in other words you hear a tick each 250ms
+the reason it was set to a low value it to allow the user the see what is actually happening
+else it can be set to the physical processor speed which is 2.4GHz (over clocking)
+and we will see soon how to do it
+
+a process is a sequence of instructions that requires a certain number of clock cycles
+in order for it to be terminated
+from here we can estimate lifespan of a process (infinity life span )
+
+
+# what does it do
 
 # how it works
 
@@ -160,3 +208,6 @@ gameloop concept
 - merging
 
 -git+Github
+
+
+# what to add
