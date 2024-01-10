@@ -1,10 +1,11 @@
 from os import system
 import time
 
-#MAINPATH = "../"
+# MAINPATH = "../"
 MAINPATH = ""
 COMP_DIST = f"{MAINPATH}bin/"
 BUILD_DIST = f"{MAINPATH}build/"
+MERGE_DIST = f"{MAINPATH}merge/"
 
 MAIN_FILE_NAME = "main"
 MAIN_FILE = f"{MAINPATH}{MAIN_FILE_NAME}"
@@ -79,7 +80,7 @@ def merge():
 
         f.close()
 
-    with open(f"{MAINPATH}merged.c", "w") as f:
+    with open(f"{MERGE_DIST}merged.c", "w") as f:
         f.writelines(resultLines)
         f.close()
 
