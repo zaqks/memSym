@@ -18,18 +18,33 @@ int main(int argc, char *args[])
 
     ramPartitions = initRam();
 
+    // getUserData
+    if (getUserData())
+    {
+        printf("userdata loaded\n");
+        if (checkUserData())
+        {
+            // setup the structs according to the userdata
+            setUserData(iStack, ramPartitions);
+            printf("userdata set\n");
+        }
+        else
+        {
+            printf("userdata corrupted\n");
+        }
+    }
+
     // widgets inits
     legendW = initLengendW(renderer);
     statusW = initStatusW(renderer);
 
     iStackW = initWIStack();
     ramW = initRamW();
-    
-    //init sound
-    initSounds();
 
+    // init sound
+    initSounds();
 
     mainLoop(window, eventFunc, loopFunc);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
