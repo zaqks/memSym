@@ -920,7 +920,6 @@ void printIStack(Stack *stk)
     free(tmpStk);
     printf("_______________________\n\n\n");
 }
-#include <stdlib.h>
 #include <strings.h>
 
 typedef struct
@@ -1218,7 +1217,7 @@ typedef struct
 
 #define beta 45
 
-#define maxProcZ 100
+#define maxProcZ 50
 
 
 TTF_Font *processFont;
@@ -1273,6 +1272,7 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     if (process->clocks > 0)
     {
         Parallelogram *currentLevel;
+
         for (int i = 1; i < process->clocks + 1; i++)
         {
             // face2
@@ -1286,16 +1286,18 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
 
             pushArrayNode(widget->levels, currentLevel);
 
+            /*
             // face1
             currentLevel = initParallelogram(
                 face1->x1,
                 face1->y1,
                 face1->w,
-                face1->h * i / process->clocks,
-                face1->x3 * i / process->clocks,
+                face1->h * i / (process->clocks),
+                face1->x3 * i / (process->clocks),
                 face1->y3);
 
             pushArrayNode(widget->levels, currentLevel);
+            */
         }
     }
 
@@ -1343,11 +1345,6 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
                            process->color.b,
                            process->color.a);
     drawParallelogram(renderer, process->face1, true);
-
-    SDL_SetRenderDrawColor(renderer, process->color.r,
-                           process->color.g,
-                           process->color.b,
-                           process->color.a);
     drawParallelogram(renderer, process->face2, true);
 
     // draw facing area
