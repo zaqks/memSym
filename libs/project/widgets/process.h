@@ -145,11 +145,6 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
                            process->color.b,
                            process->color.a);
     drawParallelogram(renderer, process->face1, true);
-
-    SDL_SetRenderDrawColor(renderer, process->color.r,
-                           process->color.g,
-                           process->color.b,
-                           process->color.a);
     drawParallelogram(renderer, process->face2, true);
 
     // draw facing area
