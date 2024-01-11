@@ -117,10 +117,13 @@ SDL_Color TXTCLR = {255, 255, 255, 255};
 SDL_Color WHITECLR = {255, 255, 255, 255};
 SDL_Color GREENCLR = {0, 255, 0, 255};
 SDL_Color REDCLR = {255, 0, 0, 255};
-SDL_Color BLUECLR = {0, 0, 255, 255};
+//SDL_Color BLUECLR = {0, 0, 255, 255};
 //
 
 int MAINPADDING = 20;//*ratio w:h
+//recursivity support for lists
+
+
 typedef struct listNode
 {
     void *val;
@@ -367,10 +370,12 @@ typedef struct
     SDL_Color color;
 } Process;
 
+//generate a random int between minx and max
 int randomNum(int min, int max)
 {
     return (rand() % (max - min)) + min;
 }
+
 
 Process *initProcess()
 {
@@ -408,6 +413,8 @@ void pushProcessQueue(Queue *queue, Process *process)
     pushQueueNode(queue, process);
 }
 
+
+//free the process
 void killProcess(Process *process)
 {
     free(process->arvTime);
@@ -574,6 +581,7 @@ Ram *initRam()
     return ram;
 }
 
+//load a process to the ram
 int loadProcess(Ram *ram, Process *process, int strategy)
 {
     ListNode *current;
@@ -737,6 +745,8 @@ int loadProcess(Ram *ram, Process *process, int strategy)
     return 0;
 }
 
+//decrease all the processes clocks with 1
+//and kill the completed ones
 int tickRam(Ram *ram) // returns if something was deleted
 {
     bool deleted = false;
@@ -792,6 +802,7 @@ int tickRam(Ram *ram) // returns if something was deleted
 }
 
 // merge randomly
+//merge the free partitions together
 int mergePartitions(Ram *ram) // returns  merged
 {
 
@@ -1111,6 +1122,8 @@ void drawParallelogram(SDL_Renderer *renderer, Parallelogram *shape, bool fill)
 }
 
  
+//the legend contains the controls definition
+
 #define LegendsNum 10
 
 char *legends[LegendsNum] = {"<q> toggle processor",
@@ -2026,6 +2039,7 @@ void playSound(int soundId, bool canPlay)
 #include <assert.h>
 const char *udPath = "data/userdata";
 
+//split a given str into tokens
 char **str_split(char *a_str, const char a_delim)
 {
     char **result = 0;
@@ -2083,6 +2097,7 @@ List *partsizes;
 List *queueLens;
 List *processes;
 
+//load the file
 int getUserData()
 {
 
@@ -2229,6 +2244,7 @@ int getUserData()
     return 1;
 }
 
+//check corruption
 int checkUserData()
 {
     // check initial vars
@@ -2325,6 +2341,7 @@ int checkUserData()
     return 1;
 }
 
+//apply the content to the current program variables
 int setUserData(Stack *iStk, Ram *ram)
 {
     // free queueLens
@@ -2575,7 +2592,7 @@ int main(int argc, char *args[])
 {
     srand(time(NULL)); // set the seed
 
-    window = initWin("memSym");
+    window = initWin("memSym"); //init the window
     pixelFormat = SDL_GetWindowSurface(window->win)->format;
     renderer = window->renderer;
     MAINPADDING *= window->padding;

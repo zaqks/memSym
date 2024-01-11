@@ -1,3 +1,5 @@
+//the legend contains the controls definition
+
 #define LegendsNum 10
 char *legends[LegendsNum] = {"<q> toggle processor",
                              "<w> toggle queue",

@@ -14,10 +14,12 @@ typedef struct
     SDL_Color color;
 } Process;
 
+//generate a random int between minx and max
 int randomNum(int min, int max)
 {
     return (rand() % (max - min)) + min;
 }
+
 
 Process *initProcess()
 {
@@ -55,6 +57,8 @@ void pushProcessQueue(Queue *queue, Process *process)
     pushQueueNode(queue, process);
 }
 
+
+//free the process
 void killProcess(Process *process)
 {
     free(process->arvTime);

@@ -26,6 +26,7 @@ Ram *initRam()
     return ram;
 }
 
+//load a process to the ram
 int loadProcess(Ram *ram, Process *process, int strategy)
 {
     ListNode *current;
@@ -189,6 +190,8 @@ int loadProcess(Ram *ram, Process *process, int strategy)
     return 0;
 }
 
+//decrease all the processes clocks with 1
+//and kill the completed ones
 int tickRam(Ram *ram) // returns if something was deleted
 {
     bool deleted = false;
@@ -244,6 +247,7 @@ int tickRam(Ram *ram) // returns if something was deleted
 }
 
 // merge randomly
+//merge the free partitions together
 int mergePartitions(Ram *ram) // returns  merged
 {
 

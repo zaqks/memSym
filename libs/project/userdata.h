@@ -1,6 +1,7 @@
 #include <assert.h>
 const char *udPath = "data/userdata";
 
+//split a given str into tokens
 char **str_split(char *a_str, const char a_delim)
 {
     char **result = 0;
@@ -58,6 +59,7 @@ List *partsizes;
 List *queueLens;
 List *processes;
 
+//load the file
 int getUserData()
 {
 
@@ -204,6 +206,7 @@ int getUserData()
     return 1;
 }
 
+//check corruption
 int checkUserData()
 {
     // check initial vars
@@ -300,6 +303,7 @@ int checkUserData()
     return 1;
 }
 
+//apply the content to the current program variables
 int setUserData(Stack *iStk, Ram *ram)
 {
     // free queueLens

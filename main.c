@@ -4,7 +4,7 @@ int main(int argc, char *args[])
 {
     srand(time(NULL)); // set the seed
 
-    window = initWin("memSym");
+    window = initWin("memSym"); //init the window
     pixelFormat = SDL_GetWindowSurface(window->win)->format;
     renderer = window->renderer;
     MAINPADDING *= window->padding;
