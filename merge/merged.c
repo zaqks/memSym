@@ -4,7 +4,7 @@
 
 #define REFRESHRATE 33
 
-#define FULLSCREEN false
+#define FULLSCREEN true
 
 
 int SCREEN_WIDTH = 1024;
@@ -1008,6 +1008,110 @@ void changeTextColor(Text *widget, SDL_Color color)
 {
     widget->color = color;
 }
+typedef struct
+{
+    int x1;
+    int y1;
+    int w;
+    int h;
+    int x3;
+    int y3;
+
+} Parallelogram;
+
+Parallelogram *initParallelogram(int x1,
+                                 int y1,
+                                 int w,
+                                 int h,
+                                 int x3,
+                                 int y3)
+{
+    Parallelogram *shape = (Parallelogram *)malloc(sizeof(Parallelogram));
+
+    shape->x3 = x3;
+    shape->y3 = y3;
+
+    shape->x1 = x1;
+    shape->y1 = y1;
+    shape->w = w;
+    shape->h = h;
+
+    
+
+    return shape;
+}
+
+void drawParallelogram(SDL_Renderer *renderer, Parallelogram *shape, bool fill)
+{
+
+    int x2 = shape->x1 + shape->w + shape->x3;
+    int y2 = shape->y1 + shape->h + shape->y3;
+
+    // fill
+    if (fill)
+    {
+      
+
+        int dx1;
+        int dy1;
+        int dx2;
+        int dy2;
+
+        if (shape->x3)
+        {
+            x2 = shape->x1 + shape->x3;
+            y2 = shape->y1 + shape->h + shape->y3;
+
+            dx1 = shape->x1;
+            dy1 = shape->y1;
+            dx2 = x2;
+            dy2 = y2;
+
+            for (int i = 0; i < shape->w; i++)
+            {
+                SDL_RenderDrawLine(renderer, dx1, dy1, dx2, dy2);
+
+                dx1 += 1;
+                dx2 += 1;
+            }
+        }
+        else
+        {
+            if (shape->y3)
+            {
+                dx1 = shape->x1;
+                dy1 = shape->y1;
+                dx2 = x2;
+                dy2 = dy1 + shape->y3;
+
+                for (int i = 0; i < shape->h; i++)
+                {
+                    SDL_RenderDrawLine(renderer, dx1, dy1, dx2, dy2);
+
+                    dy1 += 1;
+                    dy2 += 1;
+                }
+            }
+        }
+    }
+    else
+    {
+        int lines[4][4] =
+            {
+                {shape->x1, shape->y1, x2 - shape->x3, shape->y1 + shape->y3}, // 1
+                {x2 - shape->x3, shape->y1 + shape->y3, x2, y2},               // 2
+                {shape->x1 + shape->x3, y2 - shape->y3, x2, y2},               // 3
+                {shape->x1, shape->y1, shape->x1 + shape->x3, y2 - shape->y3}, // 4
+            };
+
+        for (int i = 0; i < 4; i++)
+        {
+            SDL_RenderDrawLine(renderer, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
+        }
+    }
+}
+
+ 
 #define LegendsNum 10
 
 char *legends[LegendsNum] = {"<q> toggle processor",
@@ -1096,6 +1200,9 @@ typedef struct
 {
     SDL_Color color;
     SDL_Rect *mainRect;
+    Parallelogram *face1;
+    Parallelogram *face2;
+
     Text *szTxt;
     Text *clkTxt;
     Text *priorityTxt;
@@ -1103,9 +1210,16 @@ typedef struct
     int id;
     Text *idTxt;
 
+    Array *levels;
+
 } WidgetProcess;
 
 #define txtPadding 5
+
+#define beta 45
+
+#define maxProcZ 100
+
 
 TTF_Font *processFont;
 
@@ -1134,18 +1248,69 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
 
     widget->mainRect = mainRect;
 
+    // 3d faces
+
+    // face2
+    // double b = atan((double)width / height);
+
+    double zH = maxProcZ;
+    if (process->clocks > 1)
+    {
+        zH *= ((double)process->clocks / MaxProcCLK);
+    }
+
+    Parallelogram *face2 = initParallelogram(x, y, zH * sin(beta), height, 0, -zH * cos(beta));
+    widget->face2 = face2;
+
+    mainRect->x += face2->w;
+    mainRect->y += face2->y3;
+    // face1
+    Parallelogram *face1 = initParallelogram(x + face2->w, y + face2->h + face2->y3, width, zH * cos(beta), -face2->w, 0);
+    widget->face1 = face1;
+
+    // levels
+    widget->levels = initArray();
+    if (process->clocks > 0)
+    {
+        Parallelogram *currentLevel;
+        for (int i = 1; i < process->clocks + 1; i++)
+        {
+            // face2
+            currentLevel = initParallelogram(
+                face2->x1,
+                face2->y1,
+                face2->w * i / process->clocks,
+                face2->h,
+                face2->x3,
+                face2->y3 * i / process->clocks);
+
+            pushArrayNode(widget->levels, currentLevel);
+
+            // face1
+            currentLevel = initParallelogram(
+                face1->x1,
+                face1->y1,
+                face1->w,
+                face1->h * i / process->clocks,
+                face1->x3 * i / process->clocks,
+                face1->y3);
+
+            pushArrayNode(widget->levels, currentLevel);
+        }
+    }
+
     // id text
 
     char *idVal = (char *)malloc(10);
     sprintf(idVal, "%d", process->id);
-    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, x + txtPadding, y + txtPadding);
+    Text *idText = createText(renderer, processFont, NULL, 0, idVal, widget->color, mainRect->x + txtPadding, mainRect->y + txtPadding);
     widget->idTxt = idText;
 
     // size text
 
     char *sizeVal = (char *)malloc(10);
     sprintf(sizeVal, "%dB", process->size);
-    Text *sizeText = createText(renderer, processFont, NULL, 0, sizeVal, widget->color, x, y);
+    Text *sizeText = createText(renderer, processFont, NULL, 0, sizeVal, widget->color, mainRect->x, mainRect->y);
     sizeText->rect->x += mainRect->w - sizeText->rect->w - txtPadding;
     sizeText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
     widget->szTxt = sizeText;
@@ -1153,7 +1318,7 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     // clock text
     char *clkVal = (char *)malloc(10);
     sprintf(clkVal, "%dC", process->clocks);
-    Text *clkText = createText(renderer, processFont, NULL, 0, clkVal, widget->color, x, y);
+    Text *clkText = createText(renderer, processFont, NULL, 0, clkVal, widget->color, mainRect->x, mainRect->y);
     clkText->rect->x += txtPadding;
     clkText->rect->y += mainRect->h - sizeText->rect->h - txtPadding;
     widget->clkTxt = clkText;
@@ -1162,7 +1327,7 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     char *prVal = (char *)malloc(2);
     sprintf(prVal, "%d", process->priority);
 
-    Text *prText = createText(renderer, processFont, NULL, 0, prVal, widget->color, x, idText->rect->y);
+    Text *prText = createText(renderer, processFont, NULL, 0, prVal, widget->color, mainRect->x, idText->rect->y);
     prText->rect->x += mainRect->w - prText->rect->w - txtPadding;
     widget->priorityTxt = prText;
 
@@ -1171,11 +1336,43 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
 
 void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
 {
-    // draw body
+
+    // draw 3d faces
     SDL_SetRenderDrawColor(renderer, process->color.r,
                            process->color.g,
                            process->color.b,
                            process->color.a);
+    drawParallelogram(renderer, process->face1, true);
+
+    SDL_SetRenderDrawColor(renderer, process->color.r,
+                           process->color.g,
+                           process->color.b,
+                           process->color.a);
+    drawParallelogram(renderer, process->face2, true);
+
+    // draw facing area
+    SDL_SetRenderDrawColor(renderer, BGCLR.r,
+                           BGCLR.g,
+                           BGCLR.b,
+                           BGCLR.a);
+    SDL_RenderFillRect(renderer, process->mainRect);
+    SDL_RenderDrawRect(renderer, process->mainRect);
+
+    // draw levels
+
+    for (int i = 0; i < process->levels->length; i++)
+    {
+        drawParallelogram(renderer, process->levels->arr[i].val, 0);
+    }
+
+    // draw outlines
+    SDL_SetRenderDrawColor(renderer, WHITECLR.r,
+                           WHITECLR.g,
+                           WHITECLR.b,
+                           WHITECLR.a);
+
+    drawParallelogram(renderer, process->face2, 0);
+    drawParallelogram(renderer, process->face1, 0);
     SDL_RenderDrawRect(renderer, process->mainRect);
 
     // draw text
@@ -1188,6 +1385,11 @@ void drawProcessW(SDL_Renderer *renderer, WidgetProcess *process)
 void eraseProcessW(WidgetProcess *process)
 {
     free(process->mainRect);
+    free(process->face1);
+    free(process->face2);
+
+    freeArray(process->levels);
+
     eraseText(process->idTxt);
     eraseText(process->szTxt);
     eraseText(process->clkTxt);
@@ -1256,9 +1458,9 @@ void drawWIQueue(SDL_Renderer *renderer, WidgetIQueue *widget)
     }
 
     // draw processesRects
-    for (int i = 0; i < widget->processesNum; i++)
+    for (int i = widget->processesNum; i > 0; i--)
     {
-        drawProcessW(renderer, widget->processesW[i]);
+        drawProcessW(renderer, widget->processesW[i - 1]);
     }
 }
 
@@ -1329,9 +1531,10 @@ void drawWIStack(SDL_Renderer *renderer, WidgetIStack *widget)
     */
 
     // draw iQueues
-    for (int i = 0; i < iStackLength; i++)
+
+    for (int i = iStackLength; i > 0; i--)
     {
-        drawWIQueue(renderer, widget->queuesW[i]);
+        drawWIQueue(renderer, widget->queuesW[i - 1]);
     }
 }
 
@@ -1361,7 +1564,6 @@ void updateWIStack(SDL_Renderer *renderer, WidgetIStack *widget, Stack *stack)
 
 WidgetLegend *legendW;
 WidgetIStack *iStackW;
-
 #define StatusNum 8
 
 char *statusVals[StatusNum] = {
@@ -1613,12 +1815,20 @@ void drawPartitionW(SDL_Renderer *renderer, WidgetPartition *widget)
     SDL_RenderDrawRect(renderer, widget->mainRect);
 
     // processes
+    Stack *toDraw = initStack();
+
     ListNode *current = widget->processW->head;
     while (current)
     {
-        drawProcessW(renderer, current->val);
+        pushStackNode(toDraw, current->val);
         current = current->next;
     }
+    while (!emptyStack(toDraw))
+    {
+        drawProcessW(renderer, popStackNode(toDraw));
+    }
+
+    free(toDraw);
 
     // addr txt
     drawText(renderer, widget->addrTxt);
@@ -1691,14 +1901,22 @@ void drawRawW(SDL_Renderer *renderer, WidgetRam *widget)
     SDL_RenderDrawRect(renderer, widget->grpRect);
 
     // partitions
+    Stack *toDraw = initStack();
+
     ListNode *current = widget->partitionsW->head;
-    for (int i = 0; i < getListLength(widget->partitionsW); i++)
+    
+    while (current)
     {
-        drawPartitionW(renderer, current->val);
+        pushStackNode(toDraw, current->val);
         current = current->next;
     }
 
-    // printf("draw ram\n");
+    while (!emptyStack(toDraw))
+    {
+        drawPartitionW(renderer, popStackNode(toDraw));
+    }
+
+    free(toDraw);
 }
 
 void updateRawW(SDL_Renderer *renderer, WidgetRam *widget, Ram *ram)
@@ -2336,16 +2554,17 @@ void loopFunc(Window *window)
         // updateWIQueue(renderer, iQueueW, iQueue);
         // drawWIQueue(renderer, iQueueW);
 
-        updateWIStack(renderer, iStackW, iStack);
-        drawWIStack(renderer, iStackW);
-
-        updateRawW(renderer, ramW, ramPartitions);
-        drawRawW(renderer, ramW);
-
         updateStatusW(renderer, statusW, runProcessor, runQueue, loadingStrategy, priority, sound, printIndx);
         drawStatusW(renderer, statusW);
 
         drawLegendW(renderer, legendW);
+
+        updateRawW(renderer, ramW, ramPartitions);
+        drawRawW(renderer, ramW);
+
+        updateWIStack(renderer, iStackW, iStack);
+        drawWIStack(renderer, iStackW);
+
         //
         SDL_RenderPresent(window->renderer);
         counter = 0;

@@ -18,7 +18,7 @@ typedef struct
 
 #define txtPadding 5
 #define beta 45
-#define maxProcZ 100
+#define maxProcZ 50
 
 TTF_Font *processFont;
 
