@@ -229,6 +229,20 @@ understand how memSym works since it was made using a custom
 game engine
 
 -what is a game engine
+a game engine is a set of tools and settings that forms a self-sufficiant
+framework allowing us to create a game development environment and build on top
+of it using a dedicated programming language for a better perfomance or any set 
+UI tools. with a game engine you can easily handle the display of pixels,2D/3D transfomations,
+user input, and sounds etc..
+there are many prime game engines examples such Unity & Unreal which could be used by anyone
+but have some limitions escpecially when it comes to licencing, 
+or any open-source one such godot, pygame etc.. 
+with enough knowledge, they could transformed into beasts by doing extrem memory management
+and some compilation tricks and of course applying some math while rendering to limit the 
+ressources requirement, it could even lead to an era when GPUs are useless since everything could
+be achieved using software rendering; all this to come to the fact that with enough work
+a custom game engine could demolish the famous and bigger ones
+
 -what is a gameloop
  -mainLoop
  -eventLoop
