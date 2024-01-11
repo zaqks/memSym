@@ -309,8 +309,9 @@ cycle where n=CLK/REFRESHRATE (don't forget that the 2 values are in ms so the r
 
 that way we could easily run the same program at basically 2 different clock speeds even thought they are not related
 the same concept could be used to run more than 1 clock according to the refresh rate
-even the section responsible about the refreshing could be nested in a lower delay loop in certain case
+even the section responsible about the refreshing could be nested in a lower delay loop in certain cases
 this principle is called timing 
+so our game engine is provided with a timer
 
 -custom game engine
 -what is sdl
