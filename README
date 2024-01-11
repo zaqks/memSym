@@ -311,7 +311,10 @@ that way we could easily run the same program at basically 2 different clock spe
 the same concept could be used to run more than 1 clock according to the refresh rate
 even the section responsible about the refreshing could be nested in a lower delay loop in certain cases
 this principle is called timing 
-so our game engine is provided with a timer
+
+so our game engine is equipped with a timer where all the functions responsible of updating the virtual memory state are called
+
+now let's focus about our engines architecture
 
 -custom game engine
 -what is sdl
