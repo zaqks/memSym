@@ -224,22 +224,22 @@ let's start about the core of our program, the mainloop
 in orders to explain this concept we need to travel from
 the world of software developement and engineering to
 one of its famous branches which is game developement
-by understanding some of it's main concepts, we can easily 
+by understanding some of it's main concepts, we can easily
 understand how memSym works since it was made using a custom
 game engine
 
 -what is a game engine
 a game engine is a set of tools and settings that forms a self-sufficiant
 framework allowing us to create a game development environment and build on top
-of it using a dedicated programming language for a better perfomance or any set 
+of it using a dedicated programming language for a better perfomance or any set
 UI tools. with a game engine you can easily handle the display of pixels,2D/3D transfomations,
 user input, and sounds etc..
 
 there are many prime game engines examples such Unity & Unreal which could be used by anyone
-but have some limitions escpecially when it comes to licencing, 
-or any open-source one such godot, pygame etc.. 
+but have some limitions escpecially when it comes to licencing,
+or any open-source one such godot, pygame etc..
 with enough knowledge, they could be transformed into beasts by doing extrem memory management
-and some compilation tricks and of course applying some math while rendering to limit the 
+and some compilation tricks and of course applying some math while rendering to limit the
 ressources requirement, it could even lead to an era when GPUs are useless since everything could
 be achieved using software rendering; all this to come to the fact that with enough work
 a custom game engine could demolish the famous and bigger ones and more interstingly
@@ -247,29 +247,75 @@ more user friendly for it's creator since he's its creator.
 this is a reason why big companies holding the game industry such Rockstar are using their private
 game engines
 
-to recap everything, a game engine could be considered as a library that could be adapted to the 
+to recap everything, a game engine could be considered as a library that could be adapted to the
 developer needs and built on top of any existing library especially the ones that handles the display
-
 
 now the way a game engine works varies between one to another but we will give a general concept
 on each game/most of software/mobile apps we have a loop called the mainloop or gameloop for games-dev
-this loop will do all the treatements in the program, the only task that could be excluded from it are the 
+this loop will do all the treatements in the program, the only tasks that could be excluded from it are the
 initialization functions generally required to run only one time at the begining.
-for the included treatements we have the window refreshing, ui updating, events capture, and some user defined 
+for the included treatements we have the window refreshing, ui updating, events capture, and user defined
 functions.
-a fact about the gameloop is that it doesn't constantly run as it is delay by a certain amount after each itteration
-just to let the use see the new composed frame. the less the it takes the better the framerate
-for a delay of 33ms of have a fram rate of 33fps(frame per second) which is good for an average game
+a fact about the gameloop is that it doesn't constantly run overloading the cpu as it is delayed by a certain
+amount of time after each itteration just to let the user see the new composed frame.
+the less the it is the better the framerate
+for a delay of 33ms you have a frame rate of 33fps(frame per second) which is good for an average game
+another fun fact about the human eye is that is can only percieve a framerate located between 30 to 70 fps
+so no need to use a refresh rate above those.
+refreshing the display is not the only operation done in a gameloop,
+it also checks for user events such mouse events(clicks, tracking the cursor position), keyboard events(such
+keypresses aka keydown, keyrelease aka keyup), gamepads events ...
+it also checks if a window is moved, resized, closed
 
+in general everything happens inside the mainloop as everything need to be updated according to the refresh
+rate
 
--what is a gameloop
- -mainLoop
- -eventLoop
+after giving a short overview about what a gameengine could be, we have all the required terminology to start introducing
+our software architecture
+
+as perviously mentioned, memSym was built on top of a custom game engine
+this game engine follows exactly the principles introduced above, a mainloop that contains everything and updates everything
+according to the default defined refresh rate of 33 fps
+if you were attentive when you ran the software previously, there is a possiblity now of you assuming that the refresh rate
+was 4fps because if you remember, when there is a change in a screen you head a tick sound which occurs each 250ms;
+well the 2 values are completly unrelated
+let's suppose a c function as the following:
+
+void wait(const int time); // in ms
+
+it's name shows it, it its a function which blocks the execution of a program for a certain duration in other words, waits for
+the passed duration
+and let's consider the following instructions:
+
+#defile REFRSHRATE 33
+#define CLK 250 //divide 1000 by CLK to have the value in Hz
+
+int counter = CLK / REFRESHRATE;
+
+while(1){
+if(counter>=CLK / REFRESHRATE){
+  counter = 0;
+}
+counter ++;
+
+wait(REFRESHRATE);
+}
+
+as you can see this is an exacts replica of our mainloop interpretation
+you have the loop running according to the frame rate
+a counter was associated the it inorder to count if the CLK time has passed
+in another point of view, the loop need to run n time in order to do a virtual clock 
+cycle where n=CLK/REFRESHRATE (don't forget that the 2 values are in ms so the result would be dimensionless value)
+
+that way we could easily run the same program at basically 2 different clock speeds even thought they are not related
+the same concept could be used to run more than 1 clock according to the refresh rate
+even the section responsible about the refreshing could be nested in a lower delay loop in certain case
+this principle is called timing 
 
 -custom game engine
-  -what is sdl
-  -widget
-  -sound support
+-what is sdl
+-widget
+-sound support
 
 # how was it made (a dive into the code)
 
@@ -296,5 +342,6 @@ for a delay of 33ms of have a fram rate of 33fps(frame per second) which is good
 -git+Github
 
 # what to add
+
 animations
 hex support
