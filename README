@@ -234,14 +234,33 @@ framework allowing us to create a game development environment and build on top
 of it using a dedicated programming language for a better perfomance or any set 
 UI tools. with a game engine you can easily handle the display of pixels,2D/3D transfomations,
 user input, and sounds etc..
+
 there are many prime game engines examples such Unity & Unreal which could be used by anyone
 but have some limitions escpecially when it comes to licencing, 
 or any open-source one such godot, pygame etc.. 
-with enough knowledge, they could transformed into beasts by doing extrem memory management
+with enough knowledge, they could be transformed into beasts by doing extrem memory management
 and some compilation tricks and of course applying some math while rendering to limit the 
 ressources requirement, it could even lead to an era when GPUs are useless since everything could
 be achieved using software rendering; all this to come to the fact that with enough work
-a custom game engine could demolish the famous and bigger ones
+a custom game engine could demolish the famous and bigger ones and more interstingly
+more user friendly for it's creator since he's its creator.
+this is a reason why big companies holding the game industry such Rockstar are using their private
+game engines
+
+to recap everything, a game engine could be considered as a library that could be adapted to the 
+developer needs and built on top of any existing library especially the ones that handles the display
+
+
+now the way a game engine works varies between one to another but we will give a general concept
+on each game/most of software/mobile apps we have a loop called the mainloop or gameloop for games-dev
+this loop will do all the treatements in the program, the only task that could be excluded from it are the 
+initialization functions generally required to run only one time at the begining.
+for the included treatements we have the window refreshing, ui updating, events capture, and some user defined 
+functions.
+a fact about the gameloop is that it doesn't constantly run as it is delay by a certain amount after each itteration
+just to let the use see the new composed frame. the less the it takes the better the framerate
+for a delay of 33ms of have a fram rate of 33fps(frame per second) which is good for an average game
+
 
 -what is a gameloop
  -mainLoop
@@ -277,3 +296,5 @@ a custom game engine could demolish the famous and bigger ones
 -git+Github
 
 # what to add
+animations
+hex support

@@ -1,5 +1,4 @@
 #include <SDL2/SDL_ttf.h>
-#include <stdlib.h>
 #include <strings.h>
 
 typedef struct

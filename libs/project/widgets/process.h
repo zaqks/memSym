@@ -72,6 +72,7 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
     if (process->clocks > 0)
     {
         Parallelogram *currentLevel;
+
         for (int i = 1; i < process->clocks + 1; i++)
         {
             // face2
@@ -85,16 +86,18 @@ WidgetProcess *initProcessW(SDL_Renderer *renderer, Process *process, int width,
 
             pushArrayNode(widget->levels, currentLevel);
 
+            /*
             // face1
             currentLevel = initParallelogram(
                 face1->x1,
                 face1->y1,
                 face1->w,
-                face1->h * i / process->clocks,
-                face1->x3 * i / process->clocks,
+                face1->h * i / (process->clocks),
+                face1->x3 * i / (process->clocks),
                 face1->y3);
 
             pushArrayNode(widget->levels, currentLevel);
+            */
         }
     }
 
