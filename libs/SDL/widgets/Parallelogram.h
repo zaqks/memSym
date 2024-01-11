@@ -6,6 +6,7 @@ typedef struct
     int h;
     int x3;
     int y3;
+
 } Parallelogram;
 
 Parallelogram *initParallelogram(int x1,
@@ -25,6 +26,8 @@ Parallelogram *initParallelogram(int x1,
     shape->w = w;
     shape->h = h;
 
+    
+
     return shape;
 }
 
@@ -34,8 +37,11 @@ void drawParallelogram(SDL_Renderer *renderer, Parallelogram *shape, bool fill)
     int x2 = shape->x1 + shape->w + shape->x3;
     int y2 = shape->y1 + shape->h + shape->y3;
 
+    // fill
     if (fill)
     {
+      
+
         int dx1;
         int dy1;
         int dx2;
@@ -80,7 +86,6 @@ void drawParallelogram(SDL_Renderer *renderer, Parallelogram *shape, bool fill)
     }
     else
     {
-
         int lines[4][4] =
             {
                 {shape->x1, shape->y1, x2 - shape->x3, shape->y1 + shape->y3}, // 1
@@ -95,3 +100,5 @@ void drawParallelogram(SDL_Renderer *renderer, Parallelogram *shape, bool fill)
         }
     }
 }
+
+ 
